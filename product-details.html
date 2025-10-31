@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            background-image: linear-gradient(to bottom right, #f8f9fa, #e9f5f8);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .top-frame {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #2b6777 0%, #204854 100%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        
+        .top-frame a {
+            color: white;
+            font-size: 18px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .top-frame a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .top-frame a:before {
+            content: "←";
+            margin-right: 8px;
+            font-size: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo img {
+            height: 170%;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .product-container {
+            max-width: 900px;
+            width: 100%;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(43, 103, 119, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .product-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(43, 103, 119, 0.15);
+        }
+        
+        .product-header {
+            background: linear-gradient(135deg, #52ab98 0%, #2b6777 100%);
+            padding: 20px;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .product-header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .product-content {
+            display: flex;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .product-image {
+            width: 40%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .product-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: all 0.5s ease;
+        }
+        
+        .product-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .product-info {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2b6777;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .product-price {
+            font-size: 28px;
+            color: #52ab98;
+            margin-bottom: 20px;
+            font-weight: 600;
+            padding: 8px 0;
+            border-bottom: 2px solid #f3f7f9;
+        }
+        
+        .product-detail-section {
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f7f9;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #2b6777;
+            display: inline-block;
+            width: 120px;
+        }
+        
+        .detail-value {
+            color: #333;
+        }
+        
+        .product-description {
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        
+        .product-specs {
+            background-color: #f3f7f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #52ab98;
+        }
+        
+        .product-warranty {
+            font-size: 14px;
+            color: #777;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, #52ab98 0%, #2b6777 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(43, 103, 119, 0.25);
+            position: relative;
+            overflow: hidden;
+            align-self: flex-start;
+        }
+        
+        .add-to-cart-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .add-to-cart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(43, 103, 119, 0.4);
+        }
+        
+        .add-to-cart-btn:hover::before {
+            left: 100%;
+        }
+        
+        .add-to-cart-btn i {
+            margin-right: 10px;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .top-frame {
+                padding: 15px 20px;
+            }
+            
+            .product-container {
+                margin: 20px 15px;
+            }
+            
+            .product-content {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .product-image, .product-info {
+                width: 100%;
+            }
+            
+            .product-image {
+                margin-bottom: 20px;
+            }
+            
+            .add-to-cart-btn {
+                width: 100%;
+                align-self: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-frame">
+        <a href="products.html">Back</a>
+        <div class="logo">
+            <img src="logo-transparent-png.png" alt="QuickCart Logo">
+        </div>
+    </div>
+
+    <div class="product-container">
+        <div class="product-content">
+            <div class="product-image">
+                <img id="product-img" src="" alt="Product Image">
+            </div>
+            <div class="product-info">
+                <h1 class="product-name" id="product-name"></h1>
+                <p class="product-price" id="product-price"></p>
+                
+                <div class="product-detail-section">
+                    <span class="detail-label">Size:</span>
+                    <span class="detail-value" id="product-size"></span>
+                </div>
+                
+                <div class="product-detail-section">
+                    <span class="detail-label">Color:</span>
+                    <span class="detail-value" id="product-color"></span>
+                </div>
+                
+                <div class="product-description">
+                    <h3>Description</h3>
+                    <p id="product-description"></p>
+                </div>
+                
+                <div class="product-specs">
+                    <h3>Specifications</h3>
+                    <p id="product-specs"></p>
+                </div>
+                
+                <div class="product-warranty">
+                    <i class="fas fa-shield-alt"></i> <strong>Warranty:</strong> <span id="product-warranty"></span>
+                </div>
+                
+                <button class="add-to-cart-btn" onclick="addToCart()">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get("product_id"));
+
+        // Sample product data (update this dynamically from database if needed)
+        const productData = {
+            1: { name: "T-Shirt", image: "tshirt.jpg", price: "₹599", size: "M, L, XL", color: "Black, Blue, White", description: "Comfortable cotton T-shirt with premium quality fabric. Perfect for casual wear and everyday use.", specs: "100% Cotton, Machine Washable, Moisture-wicking fabric", warranty: "6 months manufacturer warranty" },
+            2: { name: "Jeans", image: "jeans.jpg", price: "₹1299", size: "32, 34, 36, 38", color: "Blue, Black", description: "Premium slim-fit denim jeans with stylish design and great comfort.", specs: "Denim fabric, Stretchable, Button closure with zipper fly", warranty: "1 year warranty against manufacturing defects" },
+            3: { name: "iPhone 14", image: "iphone14.jpg", price: "₹79,999", size: "6.1-inch display", color: "Silver, Black, Blue", description: "Latest iPhone model with A15 chip. Featuring stunning camera system and all-day battery life.", specs: "128GB Storage, 12MP Camera, Face ID, Water resistant", warranty: "1 year Apple warranty with option to extend" },
+            4: { name: "Samsung Galaxy S23", image: "samsung.jpg", price: "₹74,999", size: "6.4-inch display", color: "Phantom Black, Cream", description: "Flagship Samsung smartphone with powerful performance and amazing camera capabilities.", specs: "256GB Storage, 50MP Camera, IP68 water resistance", warranty: "2 years Samsung India warranty" }
+        };
+
+        const product = productData[productId];
+
+        if (product) {
+            document.getElementById("product-img").src = product.image;
+            document.getElementById("product-name").textContent = product.name;
+            document.getElementById("product-price").textContent = product.price;
+            document.getElementById("product-size").textContent = product.size;
+            document.getElementById("product-color").textContent = product.color;
+            document.getElementById("product-description").textContent = product.description;
+            document.getElementById("product-specs").textContent = product.specs;
+            document.getElementById("product-warranty").textContent = product.warranty;
+            document.title = `${product.name} - Product Details`;
+        }
+
+        function addToCart() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            
+            // Create animation effect for feedback
+            const btn = document.querySelector('.add-to-cart-btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
+            btn.style.backgroundColor = '#4caf50';
+            
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+                btn.style.backgroundColor = '';
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>

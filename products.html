@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcategory Products</title>
+    <style>
+        /* Reuse the same styles as home.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .top-frame {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background-color: #2b6777;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: flex;              
+            justify-content: center;    
+            align-items: center;        
+            height: 40px;
+        }
+        
+        .logo img {
+            height: 170%;
+        }
+
+        .categories-container {
+            margin: 50px auto;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2b6777;
+            font-weight: bold;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #52ab98;
+        }
+
+        .category-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Product Boxes */
+        .category-box {
+            flex: 1;
+            min-width: 260px;
+            max-width: 200px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
+        .category-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .category-image {
+            width: 100%;
+            height: 130px;
+            overflow: hidden;
+        }
+
+        .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .category-box:hover .category-image img {
+            transform: scale(1.1);
+        }
+
+        .category-details {
+            padding: 10px;
+        }
+
+        .category-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2b6777;
+        }
+
+        .item-price {
+            font-size: 14px;
+            color: #52ab98;
+            margin-bottom: 8px;
+        }
+
+        .add-to-cart-btn {
+            background-color: #52ab98;
+            color: white;
+            border: none;
+            padding: 7px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #458b7d;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-frame">
+        <div class="logo">
+            <img src="logo-transparent-png.png" alt="QuickCart Logo">
+        </div>
+    </div>
+
+    <div class="categories-container">
+        <h2 class="section-title" id="subcategory-title"></h2>
+        <div class="category-row" id="products-container"></div>
+    </div>
+
+    <script>
+        // Sample product data with descriptions
+        const productData = {
+            "fashion":[
+            { id: 1, name: "Men Printed Round Neck Polyester Multicolor T-Shirt", image: "mf-p1.jpg", price: "₹499", description: "Comfortable cotton T-shirt.", rating: "4.5", stock: "In Stock" },
+                { id: 2, name: "Men Regular Fit Checkered Spread Collar Casual Shirt", image: "mf-p2.jpg", price: "₹899", description: "casual-fit cotton shirt .", rating: "4.7", stock: "Only 3 left" },
+                { id: 3, name: "Men Slim Fit Black Stretch Jeans", image: "mf-p3.jpg", price: "₹1299", description: "Premium stretch denim for maximum comfort.", rating: "4.6", stock: "In Stock" },
+                { id: 4, name: "Men's Pure Cotton Mandarin Collar Kurta", image: "mf-p4.jpg", price: "₹799", description: "Traditional kurta with modern styling.", rating: "4.3", stock: "In Stock" },
+                { id: 5, name: "Men Navy Blue Solid Bomber Jacket", image: "mf-p5.jpg", price: "₹1799", description: "Lightweight bomber jacket for casual outings.", rating: "4.8", stock: "Low Stock" },
+                { id: 6, name: "Men's Formal Oxford Leather Shoes - Brown", image: "mf-p6.jpg", price: "₹2499", description: "Genuine leather formal shoes with cushioned insole.", rating: "4.7", stock: "In Stock" },
+                { id: 7, name: "Men's Hooded Sweatshirt - Grey Melange", image: "mf-p7.jpg", price: "₹999", description: "Soft fleece hoodie for everyday wear.", rating: "4.4", stock: "In Stock" },
+                { id: 8, name: "Men's Slim Fit Formal Trousers", image: "mf-p8.jpg", price: "₹1399", description: "Wrinkle-resistant formal trousers for office wear.", rating: "4.2", stock: "In Stock" },
+                { id: 9, name: "Men's Analogue Watch with Leather Strap", image: "mf-p9.jpg", price: "₹2999", description: "Classic timepiece with genuine leather strap.", rating: "4.9", stock: "Only 2 left" },
+                { id: 10, name: "Men's Printed Casual Shorts", image: "mf-p10.jpg", price: "₹699", description: "Comfortable cotton shorts for summer.", rating: "4.3", stock: "In Stock" },
+                { id: 11, name: "Men's Running Shoes with Breathable Mesh", image: "mf-p11.jpg", price: "₹1899", description: "Lightweight running shoes with superior cushioning.", rating: "4.6", stock: "In Stock" },
+                { id: 12, name: "Men's Patterned Silk Necktie", image: "mf-p12.jpg", price: "₹799", description: "Premium silk tie with subtle pattern.", rating: "4.5", stock: "In Stock" },
+                { id: 13, name: "Men's Lightweight Linen Blazer", image: "mf-p13.jpg", price: "₹2799", description: "Breathable linen blazer perfect for summer formals.", rating: "4.4", stock: "In Stock" },
+                { id: 14, name: "Men's Polarized Aviator Sunglasses", image: "mf-p14.jpg", price: "₹1499", description: "UV protection sunglasses with metal frame.", rating: "4.7", stock: "Limited Stock" },
+                { id: 15, name: "Men's Leather Belt with Classic Buckle", image: "mf-p15.jpg", price: "₹899", description: "Genuine leather belt for formal and casual wear.", rating: "4.5", stock: "In Stock" },
+                { id: 1, name: "Women's Floral Print Maxi Dress", image: "dress1.jpg", price: "₹1299", description: "Elegant floral maxi dress with adjustable straps.", rating: "4.6", stock: "In Stock" },
+                { id: 2, name: "Women's High-Waist Skinny Jeans", image: "wjeans1.jpg", price: "₹1499", description: "Stretchable denim jeans for perfect fit.", rating: "4.7", stock: "In Stock" },
+                { id: 3, name: "Women's Embroidered Kurta with Palazzo Set", image: "kurta-set1.jpg", price: "₹1899", description: "Traditional embroidered ethnic wear set.", rating: "4.8", stock: "Only 5 left" },
+                { id: 4, name: "Women's Formal Blazer - Black", image: "wblazer1.jpg", price: "₹2199", description: "Classic black blazer for professional look.", rating: "4.5", stock: "In Stock" },
+                { id: 5, name: "Women's Block Heel Sandals", image: "sandals1.jpg", price: "₹1299", description: "Comfortable block heels for everyday wear.", rating: "4.3", stock: "In Stock" },
+                { id: 6, name: "Women's Printed A-Line Skirt", image: "skirt1.jpg", price: "₹899", description: "Flowy A-line skirt with ethnic print.", rating: "4.4", stock: "In Stock" },
+                { id: 7, name: "Women's V-Neck Blouse", image: "blouse1.jpg", price: "₹799", description: "Elegant V-neck blouse for formal occasions.", rating: "4.2", stock: "Low Stock" },
+                { id: 8, name: "Women's Embellished Clutch Bag", image: "clutch1.jpg", price: "₹1099", description: "Stylish evening clutch with stone embellishments.", rating: "4.7", stock: "In Stock" },
+                { id: 9, name: "Women's Oversized Sunglasses", image: "wsunglasses1.jpg", price: "₹999", description: "Fashion forward UV protection sunglasses.", rating: "4.5", stock: "In Stock" },
+                { id: 10, name: "Women's Gold Plated Necklace Set", image: "jewelry1.jpg", price: "₹1599", description: "Elegant necklace with matching earrings.", rating: "4.8", stock: "Only 2 left" },
+                { id: 11, name: "Women's Workout Leggings", image: "leggings1.jpg", price: "₹899", description: "High-waist compression leggings for fitness.", rating: "4.6", stock: "In Stock" },
+                { id: 12, name: "Women's Cotton Loungewear Set", image: "loungewear1.jpg", price: "₹1299", description: "Comfortable cotton set for home wear.", rating: "4.4", stock: "In Stock" },
+                { id: 13, name: "Women's Leather Crossbody Bag", image: "handbag1.jpg", price: "₹1799", description: "Compact leather bag with adjustable strap.", rating: "4.7", stock: "In Stock" },
+                { id: 14, name: "Women's Digital Wrist Watch", image: "wwatch1.jpg", price: "₹1499", description: "Modern digital watch with multiple functions.", rating: "4.3", stock: "In Stock" },
+                { id: 15, name: "Women's Sequin Party Top", image: "partytop1.jpg", price: "₹999", description: "Glamorous sequin top for evening events.", rating: "4.5", stock: "Limited Stock" },
+                { id: 1, name: "Kids Cartoon Print T-shirt", image: "kidstee1.jpg", price: "₹399", description: "Soft cotton t-shirt with fun cartoon prints.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Girls Floral Print Dress", image: "girlsdress1.jpg", price: "₹799", description: "Pretty floral pattern dress with puff sleeves.", rating: "4.6", stock: "In Stock" },
+    { id: 3, name: "Boys Denim Shorts", image: "boyshorts1.jpg", price: "₹499", description: "Comfortable elastic waist denim shorts.", rating: "4.5", stock: "In Stock" },
+    { id: 4, name: "Kids Light-up Sneakers", image: "kidssneakers1.jpg", price: "₹899", description: "Fun sneakers with LED lights on soles.", rating: "4.8", stock: "Only 4 left" },
+    { id: 5, name: "Girls Unicorn Pajama Set", image: "girlspj1.jpg", price: "₹699", description: "Soft cotton pajamas with unicorn print.", rating: "4.7", stock: "In Stock" },
+    { id: 6, name: "Boys Superhero Costume Set", image: "boyscostume1.jpg", price: "₹999", description: "Complete superhero costume with cape.", rating: "4.9", stock: "Limited Stock" },
+    { id: 7, name: "Kids Winter Hooded Jacket", image: "kidsjacket1.jpg", price: "₹1199", description: "Warm padded jacket with cute animal ears hood.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Girls Sparkly Ballet Flats", image: "girlsshoes1.jpg", price: "₹599", description: "Comfortable glitter shoes for special occasions.", rating: "4.4", stock: "In Stock" },
+    { id: 9, name: "Boys Graphic Print Hoodie", image: "boyshoodie1.jpg", price: "₹799", description: "Cozy hoodie with cool graphic print.", rating: "4.5", stock: "In Stock" },
+    { id: 10, name: "Kids Adjustable Sun Hat", image: "kidshat1.jpg", price: "₹349", description: "UV protection hat with chin strap.", rating: "4.3", stock: "In Stock" },
+    { id: 11, name: "Girls Leggings 2-Pack", image: "girlsleggings1.jpg", price: "₹549", description: "Comfortable stretch leggings in multiple colors.", rating: "4.7", stock: "In Stock" },
+    { id: 12, name: "Boys Formal Shirt and Bow Tie Set", image: "boysformal1.jpg", price: "₹899", description: "Smart occasion wear with detachable bow tie.", rating: "4.6", stock: "Only 2 left" },
+    { id: 13, name: "Kids Colorful Rain Boots", image: "kidsboots1.jpg", price: "₹649", description: "Waterproof boots with easy-pull handles.", rating: "4.8", stock: "In Stock" },
+    { id: 14, name: "Girls Sequin Backpack", image: "girlsbag1.jpg", price: "₹799", description: "Sparkly backpack with reversible sequins.", rating: "4.9", stock: "Low Stock" },
+    { id: 15, name: "Boys Sports Jersey Set", image: "boyssports1.jpg", price: "₹699", description: "Breathable jersey with shorts for active kids.", rating: "4.5", stock: "In Stock" },
+    { id: 1, name: "Men's Classic Leather Derby Shoes", image: "derby1.jpg", price: "₹2499", description: "Formal leather shoes with lace-up design.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Women's Block Heel Pumps", image: "pumps1.jpg", price: "₹1799", description: "Comfortable office wear pumps with 2-inch heel.", rating: "4.5", stock: "In Stock" },
+    { id: 3, name: "Kids Velcro Canvas Sneakers", image: "kidsneakers1.jpg", price: "₹699", description: "Easy-wear sneakers with colorful design.", rating: "4.6", stock: "In Stock" },
+    { id: 4, name: "Men's Sports Running Shoes", image: "running1.jpg", price: "₹1999", description: "Lightweight mesh running shoes with cushioned sole.", rating: "4.8", stock: "Low Stock" },
+    { id: 5, name: "Women's Embellished Flat Sandals", image: "wsandals1.jpg", price: "₹999", description: "Elegant sandals with stone embellishments.", rating: "4.4", stock: "In Stock" },
+    { id: 6, name: "Men's Leather Loafers", image: "loafers1.jpg", price: "₹1899", description: "Slip-on formal shoes with tassels.", rating: "4.7", stock: "In Stock" },
+    { id: 7, name: "Women's Ankle Boots", image: "boots1.jpg", price: "₹2299", description: "Stylish faux leather boots with side zipper.", rating: "4.6", stock: "Only 3 left" },
+    { id: 8, name: "Unisex Flip Flops", image: "flipflops1.jpg", price: "₹399", description: "Comfortable rubber flip flops for casual wear.", rating: "4.3", stock: "In Stock" },
+    { id: 9, name: "Men's Hiking Boots", image: "hiking1.jpg", price: "₹2799", description: "Waterproof boots with anti-slip tread.", rating: "4.9", stock: "In Stock" },
+    { id: 10, name: "Women's Canvas Slip-ons", image: "wslipons1.jpg", price: "₹799", description: "Casual printed canvas shoes for everyday wear.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Men's Formal Monk Strap Shoes", image: "monk1.jpg", price: "₹2599", description: "Elegant formal shoes with double buckle closure.", rating: "4.7", stock: "Limited Stock" },
+    { id: 12, name: "Women's High Heel Sandals", image: "heels1.jpg", price: "₹1599", description: "Strappy evening sandals with 3-inch heel.", rating: "4.5", stock: "In Stock" },
+    { id: 13, name: "Unisex Athletic Sports Sandals", image: "sportsandals1.jpg", price: "₹1299", description: "Durable sandals with adjustable straps for outdoor activities.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "Women's Ballet Flats", image: "flats1.jpg", price: "₹899", description: "Classic comfortable flats for work or casual wear.", rating: "4.4", stock: "In Stock" },
+    { id: 15, name: "Men's Ethnic Mojari Shoes", image: "mojari1.jpg", price: "₹1499", description: "Traditional handcrafted shoes for festive occasions.", rating: "4.8", stock: "Only 5 left" }
+            ],
+            "electronics":[
+            { id: 1, name: "Galaxy S25 Ultra 5G", image: "galaxy-s25.jpg", price: "₹109999", description: "6.8-inch Dynamic AMOLED, 200MP camera, 16GB RAM, 512GB storage.", rating: "4.9", stock: "In Stock" },
+    { id: 2, name: "iPhone 16 Pro", image: "iphone16pro.jpg", price: "₹119999", description: "6.1-inch Super Retina XDR, A18 chip, 8GB RAM, 256GB storage.", rating: "4.8", stock: "Limited Stock" },
+    { id: 3, name: "Google Pixel 9", image: "pixel9.jpg", price: "₹79999", description: "6.4-inch OLED, Google Tensor G4, 12GB RAM, advanced AI camera.", rating: "4.7", stock: "In Stock" },
+    { id: 4, name: "OnePlus 13", image: "oneplus13.jpg", price: "₹69999", description: "6.7-inch AMOLED, Snapdragon 8 Gen 3, 16GB RAM, 256GB storage.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Xiaomi 14 Pro", image: "xiaomi14pro.jpg", price: "₹54999", description: "6.6-inch AMOLED, Snapdragon 8 Gen 3, 12GB RAM, 256GB storage.", rating: "4.5", stock: "In Stock" },
+    { id: 6, name: "Realme GT 6 Pro", image: "realme-gt6.jpg", price: "₹44999", description: "6.7-inch Super AMOLED, 12GB RAM, 108MP camera system.", rating: "4.4", stock: "Only 4 left" },
+    { id: 7, name: "Nothing Phone (3)", image: "nothing3.jpg", price: "₹39999", description: "6.5-inch OLED with Glyph Interface 2.0, 8GB RAM, 128GB storage.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Vivo X100 Pro", image: "vivox100pro.jpg", price: "₹79999", description: "6.8-inch E6 AMOLED, Dimensity 9300, 12GB RAM, Zeiss optics.", rating: "4.7", stock: "In Stock" },
+    { id: 9, name: "Motorola Edge 50 Ultra", image: "moto-edge50.jpg", price: "₹49999", description: "6.7-inch POLED, Snapdragon 8s Gen 2, 12GB RAM, 256GB storage.", rating: "4.3", stock: "In Stock" },
+    { id: 10, name: "POCO F6 Pro", image: "pocof6pro.jpg", price: "₹34999", description: "6.67-inch AMOLED, Snapdragon 8 Gen 2, 8GB RAM, 256GB storage.", rating: "4.5", stock: "In Stock" },
+    { id: 11, name: "iPhone SE 4", image: "iphonese4.jpg", price: "₹49999", description: "6.1-inch LCD, A16 Bionic, 6GB RAM, 128GB storage.", rating: "4.4", stock: "In Stock" },
+    { id: 12, name: "Samsung Galaxy A55", image: "galaxya55.jpg", price: "₹29999", description: "6.5-inch Super AMOLED, Exynos 1480, 8GB RAM, 128GB storage.", rating: "4.3", stock: "In Stock" },
+    { id: 13, name: "Oppo Reno 12 Pro", image: "opporeno12.jpg", price: "₹39999", description: "6.7-inch AMOLED, Dimensity 8200, 8GB RAM, 256GB storage.", rating: "4.4", stock: "Low Stock" },
+    { id: 14, name: "iQOO Neo 9 Pro", image: "iqooneo9.jpg", price: "₹35999", description: "6.78-inch AMOLED, Snapdragon 8 Gen 2, 12GB RAM, 256GB storage.", rating: "4.6", stock: "In Stock" },
+    { id: 15, name: "Redmi Note 14 Pro", image: "redminote14.jpg", price: "₹24999", description: "6.67-inch AMOLED, Dimensity 7300, 8GB RAM, 128GB storage.", rating: "4.5", stock: "In Stock" },
+    { id: 1, name: "MacBook Pro 16-inch (M4)", image: "macbookprom4.jpg", price: "₹249999", description: "16-inch Liquid Retina XDR, Apple M4 chip, 32GB RAM, 1TB SSD.", rating: "4.9", stock: "Limited Stock" },
+    { id: 2, name: "Dell XPS 15", image: "dellxps15.jpg", price: "₹169999", description: "15.6-inch 4K OLED, Intel Core i9, 32GB RAM, 1TB SSD, RTX 4070.", rating: "4.8", stock: "In Stock" },
+    { id: 3, name: "HP Spectre x360 14", image: "hpspectre.jpg", price: "₹139999", description: "14-inch OLED touchscreen, Intel Core Ultra 7, 16GB RAM, 1TB SSD.", rating: "4.7", stock: "In Stock" },
+    { id: 4, name: "Lenovo ThinkPad X1 Carbon Gen 12", image: "thinkpadx1.jpg", price: "₹149999", description: "14-inch 2.8K OLED, Intel Core Ultra 7, 32GB RAM, 1TB SSD.", rating: "4.8", stock: "In Stock" },
+    { id: 5, name: "Asus ROG Zephyrus G16", image: "asusrog.jpg", price: "₹179999", description: "16-inch QHD 240Hz, Intel Core i9, RTX 4080, 32GB RAM, 2TB SSD.", rating: "4.7", stock: "Only 2 left" },
+    { id: 6, name: "Microsoft Surface Laptop 7", image: "surfacelaptop7.jpg", price: "₹124999", description: "13.5-inch PixelSense, Intel Core Ultra 5, 16GB RAM, 512GB SSD.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "Acer Predator Helios 16", image: "predatorhelios.jpg", price: "₹159999", description: "16-inch QHD 165Hz, Intel Core i7, RTX 4070, 16GB RAM, 1TB SSD.", rating: "4.5", stock: "In Stock" },
+    { id: 8, name: "MacBook Air 15-inch (M3)", image: "macbookairm3.jpg", price: "₹129999", description: "15.3-inch Liquid Retina, Apple M3 chip, 16GB RAM, 512GB SSD.", rating: "4.8", stock: "In Stock" },
+    { id: 9, name: "Razer Blade 16", image: "razerblade16.jpg", price: "₹259999", description: "16-inch 4K 240Hz, Intel Core i9, RTX 4090, 32GB RAM, 2TB SSD.", rating: "4.9", stock: "Limited Stock" },
+    { id: 10, name: "MSI Creator Z17 HX", image: "msicreator.jpg", price: "₹229999", description: "17-inch QHD+ 165Hz, Intel Core i9, RTX 4070, 64GB RAM, 2TB SSD.", rating: "4.7", stock: "In Stock" },
+    { id: 11, name: "HP Omen 17", image: "hpomen.jpg", price: "₹149999", description: "17.3-inch QHD 240Hz, AMD Ryzen 9, RTX 4070, 32GB RAM, 1TB SSD.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Lenovo Yoga 9i Gen 9", image: "lenovoyoga.jpg", price: "₹129999", description: "14-inch 4K OLED touch, Intel Core Ultra 7, 16GB RAM, 1TB SSD.", rating: "4.7", stock: "In Stock" },
+    { id: 13, name: "Samsung Galaxy Book4 Ultra", image: "galaxybook4.jpg", price: "₹169999", description: "16-inch AMOLED, Intel Core Ultra 9, RTX 4070, 32GB RAM, 1TB SSD.", rating: "4.6", stock: "Low Stock" },
+    { id: 14, name: "Asus Zenbook S 14", image: "zenbooks14.jpg", price: "₹119999", description: "14-inch 3K OLED, Intel Core Ultra 7, 32GB RAM, 1TB SSD.", rating: "4.5", stock: "In Stock" },
+    { id: 15, name: "Alienware m18 R2", image: "alienware.jpg", price: "₹279999", description: "18-inch QHD+ 240Hz, Intel Core i9, RTX 4090, 64GB RAM, 4TB SSD.", rating: "4.9", stock: "Only 1 left" },
+    { id: 1, name: "Sony WH-1000XM6", image: "sony-wh1000xm6.jpg", price: "₹34999", description: "Wireless noise-cancelling headphones with AI adaptive sound.", rating: "4.9", stock: "In Stock" },
+    { id: 2, name: "Apple AirPods Pro 3", image: "airpodspro3.jpg", price: "₹29999", description: "Active noise cancellation, spatial audio, sweat and water resistant.", rating: "4.8", stock: "In Stock" },
+    { id: 3, name: "Bose QuietComfort Ultra", image: "boseqc.jpg", price: "₹32999", description: "Premium noise-cancelling headphones with immersive audio.", rating: "4.7", stock: "Limited Stock" },
+    { id: 4, name: "Sennheiser Momentum 5 Wireless", image: "sennheiser-momentum.jpg", price: "₹29999", description: "Audiophile-grade wireless headphones with ANC.", rating: "4.8", stock: "In Stock" },
+    { id: 5, name: "JBL Flip 7", image: "jblflip7.jpg", price: "₹12999", description: "Waterproof portable Bluetooth speaker with enhanced bass.", rating: "4.6", stock: "In Stock" },
+    { id: 6, name: "Samsung Galaxy Buds3 Pro", image: "galaxybuds3.jpg", price: "₹17999", description: "True wireless earbuds with intelligent ANC and 360 audio.", rating: "4.5", stock: "In Stock" },
+    { id: 7, name: "Sonos Era 300", image: "sonos-era300.jpg", price: "₹42999", description: "Smart speaker with spatial audio and room-filling sound.", rating: "4.7", stock: "In Stock" },
+    { id: 8, name: "Nothing Ear (3)", image: "nothingear3.jpg", price: "₹14999", description: "Transparent design earbuds with advanced noise cancellation.", rating: "4.6", stock: "In Stock" },
+    { id: 9, name: "Marshall Stanmore III", image: "marshall-stanmore.jpg", price: "₹37999", description: "Vintage-styled Bluetooth speaker with powerful sound.", rating: "4.7", stock: "Low Stock" },
+    { id: 10, name: "Google Pixel Buds Pro 2", image: "pixelbudspro2.jpg", price: "₹19999", description: "Smart earbuds with active noise cancellation and spatial audio.", rating: "4.5", stock: "In Stock" },
+    { id: 11, name: "Bose SoundLink Revolve+ II", image: "bose-revolve.jpg", price: "₹26999", description: "360° portable Bluetooth speaker with deep bass.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Audio-Technica ATH-M70x", image: "audiotechnica.jpg", price: "₹24999", description: "Professional monitor headphones for studio use.", rating: "4.8", stock: "Only 3 left" },
+    { id: 13, name: "Sony SRS-XG500", image: "sony-srs.jpg", price: "₹29999", description: "Portable party speaker with powerful sound and lighting effects.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Jabra Elite 10", image: "jabra-elite.jpg", price: "₹19999", description: "True wireless earbuds with Dolby Atmos and advanced calling.", rating: "4.4", stock: "In Stock" },
+    { id: 15, name: "Ultimate Ears MEGABOOM 4", image: "ue-megaboom.jpg", price: "₹16999", description: "Rugged waterproof speaker with 360° sound and deep bass.", rating: "4.6", stock: "In Stock" },
+    { id: 1, name: "PlayStation 5 Pro", image: "ps5pro.jpg", price: "₹59999", description: "8K gaming, ray tracing, ultra-high speed SSD, enhanced CPU/GPU.", rating: "4.9", stock: "Limited Stock" },
+    { id: 2, name: "Xbox Series X (2024 Edition)", image: "xboxseriesx2.jpg", price: "₹54999", description: "Enhanced GPU, 2TB SSD, 4K gaming at 120fps.", rating: "4.8", stock: "In Stock" },
+    { id: 3, name: "Nintendo Switch 2", image: "switch2.jpg", price: "₹34999", description: "Next-gen handheld console with enhanced graphics and battery life.", rating: "4.9", stock: "Low Stock" },
+    { id: 4, name: "Razer Basilisk V4 Pro", image: "razer-basilisk.jpg", price: "₹14999", description: "Wireless gaming mouse with 30K DPI optical sensor.", rating: "4.7", stock: "In Stock" },
+    { id: 5, name: "SteelSeries Arctis Nova Pro", image: "arctis-nova.jpg", price: "₹29999", description: "Wireless gaming headset with active noise cancellation.", rating: "4.8", stock: "In Stock" },
+    { id: 6, name: "Logitech G915 TKL", image: "logitech-g915.jpg", price: "₹19999", description: "Wireless mechanical gaming keyboard with RGB lighting.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "ASUS ROG Swift OLED 32", image: "rog-swift.jpg", price: "₹89999", description: "32-inch 4K OLED gaming monitor with 240Hz refresh rate.", rating: "4.8", stock: "Only 2 left" },
+    { id: 8, name: "Secretlab Titan Evo 2023", image: "secretlab-titan.jpg", price: "₹44999", description: "Premium gaming chair with 4D armrests and magnetic head pillow.", rating: "4.7", stock: "In Stock" },
+    { id: 9, name: "Valve Steam Deck OLED", image: "steam-deck-oled.jpg", price: "₹49999", description: "Handheld gaming PC with enhanced OLED display and battery life.", rating: "4.8", stock: "In Stock" },
+    { id: 10, name: "MSI GeForce RTX 5080", image: "rtx5080.jpg", price: "₹109999", description: "Next-gen GPU with ray tracing, DLSS 4.0, and AI acceleration.", rating: "4.9", stock: "Limited Stock" },
+    { id: 11, name: "HyperX Cloud Alpha 2", image: "hyperx-cloud.jpg", price: "₹12999", description: "Premium gaming headset with dual chamber drivers.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Corsair K100 RGB OLED", image: "corsair-k100.jpg", price: "₹24999", description: "Premium mechanical keyboard with OLED smart display.", rating: "4.7", stock: "In Stock" },
+    { id: 13, name: "SCUF Reflex Pro", image: "scuf-reflex.jpg", price: "₹29999", description: "Premium PS5 controller with remappable paddles and customizable thumbsticks.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Xbox Elite Controller Series 3", image: "xbox-elite3.jpg", price: "₹19999", description: "Premium wireless controller with adjustable tension thumbsticks.", rating: "4.7", stock: "Only 5 left" },
+    { id: 15, name: "Oculus Quest 3 Pro", image: "quest3pro.jpg", price: "₹69999", description: "Advanced VR headset with eye tracking and enhanced graphics.", rating: "4.8", stock: "In Stock" }
+
+            ],
+            "home-kitchen":[
+            { id: 1, name: "Instant Pot Duo Plus 9-in-1", image: "instant-pot.jpg", price: "₹12999", description: "Multi-functional pressure cooker with 9 cooking modes.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Philips Air Fryer XXL", image: "philips-airfryer.jpg", price: "₹14999", description: "Large capacity air fryer with fat reduction technology.", rating: "4.7", stock: "In Stock" },
+    { id: 3, name: "KitchenAid Artisan Stand Mixer", image: "kitchenaid.jpg", price: "₹39999", description: "Premium stand mixer with 10 speed settings and multiple attachments.", rating: "4.9", stock: "Limited Stock" },
+    { id: 4, name: "Vitamix Professional Series 750", image: "vitamix.jpg", price: "₹49999", description: "High-performance blender with pre-programmed settings.", rating: "4.8", stock: "In Stock" },
+    { id: 5, name: "Nespresso Vertuo Next", image: "nespresso.jpg", price: "₹16999", description: "Coffee maker with single-touch brewing and multiple cup sizes.", rating: "4.6", stock: "In Stock" },
+    { id: 6, name: "Samsung Family Hub Refrigerator", image: "samsung-fridge.jpg", price: "₹189999", description: "Smart refrigerator with touchscreen and food management system.", rating: "4.7", stock: "Only 2 left" },
+    { id: 7, name: "Bosch 800 Series Dishwasher", image: "bosch-dishwasher.jpg", price: "₹79999", description: "Ultra-quiet dishwasher with flexible third rack and smart features.", rating: "4.8", stock: "In Stock" },
+    { id: 8, name: "Zojirushi Rice Cooker & Warmer", image: "zojirushi.jpg", price: "₹19999", description: "Induction heating rice cooker with multiple cooking functions.", rating: "4.9", stock: "In Stock" },
+    { id: 9, name: "Breville Smart Oven Air Fryer Pro", image: "breville-oven.jpg", price: "₹29999", description: "Countertop oven with 13 cooking functions including air fry.", rating: "4.7", stock: "In Stock" },
+    { id: 10, name: "Ninja Foodi 11-in-1 SmartLid", image: "ninja-foodi.jpg", price: "₹24999", description: "Multi-cooker with pressure cooking, air frying and steaming.", rating: "4.6", stock: "Low Stock" },
+    { id: 11, name: "LG InstaView Door-in-Door Refrigerator", image: "lg-fridge.jpg", price: "₹169999", description: "Energy efficient refrigerator with knock-twice to see inside feature.", rating: "4.7", stock: "In Stock" },
+    { id: 12, name: "Cuisinart Elemental Food Processor", image: "cuisinart.jpg", price: "₹11999", description: "350-watt food processor with multiple blades and discs.", rating: "4.5", stock: "In Stock" },
+    { id: 13, name: "Dyson V15 Absolute Cordless Vacuum", image: "dyson-v15.jpg", price: "₹59999", description: "Powerful cordless vacuum with laser dust detection.", rating: "4.8", stock: "In Stock" },
+    { id: 14, name: "Crock-Pot 8-Quart Smart Slow Cooker", image: "crockpot.jpg", price: "₹8999", description: "WiFi-enabled slow cooker with smartphone control.", rating: "4.4", stock: "In Stock" },
+    { id: 15, name: "Whirlpool Smart Countertop Microwave", image: "whirlpool-microwave.jpg", price: "₹19999", description: "Voice-controlled microwave with scan-to-cook technology.", rating: "4.5", stock: "In Stock" },
+    { id: 1, name: "Sectional L-Shape Sofa Set", image: "sectional-sofa.jpg", price: "₹89999", description: "Premium fabric L-shaped sofa with ottoman and cushions.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Queen Size Platform Bed Frame", image: "platform-bed.jpg", price: "₹39999", description: "Modern wooden platform bed with headboard and storage.", rating: "4.6", stock: "In Stock" },
+    { id: 3, name: "Ergonomic Office Chair", image: "office-chair.jpg", price: "₹24999", description: "Adjustable chair with lumbar support and breathable mesh.", rating: "4.8", stock: "In Stock" },
+    { id: 4, name: "Solid Wood 6-Seater Dining Table", image: "dining-table.jpg", price: "₹59999", description: "Handcrafted dining table with matching chairs.", rating: "4.7", stock: "Limited Stock" },
+    { id: 5, name: "Modular Bookshelf System", image: "bookshelf.jpg", price: "₹29999", description: "Customizable shelving system with adjustable components.", rating: "4.5", stock: "In Stock" },
+    { id: 6, name: "Glass Top Coffee Table", image: "coffee-table.jpg", price: "₹19999", description: "Modern coffee table with tempered glass top and metal frame.", rating: "4.4", stock: "In Stock" },
+    { id: 7, name: "King Size Memory Foam Mattress", image: "mattress.jpg", price: "₹44999", description: "Premium memory foam mattress with cooling technology.", rating: "4.9", stock: "In Stock" },
+    { id: 8, name: "Recliner Lounge Chair with Ottoman", image: "recliner.jpg", price: "₹34999", description: "Leather recliner with matching footrest and swivel base.", rating: "4.6", stock: "Only 3 left" },
+    { id: 9, name: "Solid Wood Wardrobe", image: "wardrobe.jpg", price: "₹69999", description: "Spacious 4-door wardrobe with mirror and drawers.", rating: "4.7", stock: "In Stock" },
+    { id: 10, name: "Adjustable Standing Desk", image: "standing-desk.jpg", price: "₹39999", description: "Electric height-adjustable desk with memory settings.", rating: "4.8", stock: "In Stock" },
+    { id: 11, name: "Kids Bunk Bed with Storage", image: "bunk-bed.jpg", price: "₹49999", description: "Space-saving bunk bed with built-in drawers and desk.", rating: "4.5", stock: "In Stock" },
+    { id: 12, name: "Accent Chair with Ottoman", image: "accent-chair.jpg", price: "₹24999", description: "Stylish upholstered chair with matching footstool.", rating: "4.4", stock: "In Stock" },
+    { id: 13, name: "TV Entertainment Unit", image: "tv-unit.jpg", price: "₹27999", description: "Wall-mounted TV cabinet with storage and display shelves.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "Shoe Cabinet with Seating", image: "shoe-cabinet.jpg", price: "₹15999", description: "Space-efficient shoe storage with built-in bench.", rating: "4.3", stock: "In Stock" },
+    { id: 15, name: "Convertible Sofa Bed", image: "sofa-bed.jpg", price: "₹42999", description: "Modern sofa that transforms into a queen-size bed.", rating: "4.5", stock: "Low Stock" },
+    { id: 1, name: "Handwoven Moroccan Area Rug", image: "moroccan-rug.jpg", price: "₹12999", description: "Authentic design 5x8 feet rug with geometric patterns.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Set of 3 Framed Wall Art", image: "wall-art.jpg", price: "₹7999", description: "Modern abstract prints in black wooden frames.", rating: "4.5", stock: "In Stock" },
+    { id: 3, name: "Oversized Wall Clock", image: "wall-clock.jpg", price: "₹4999", description: "30-inch diameter metal clock with silent mechanism.", rating: "4.6", stock: "In Stock" },
+    { id: 4, name: "Decorative Table Lamp Set", image: "table-lamps.jpg", price: "₹8999", description: "Pair of ceramic lamps with fabric shades.", rating: "4.4", stock: "In Stock" },
+    { id: 5, name: "Macramé Wall Hanging", image: "macrame.jpg", price: "₹2999", description: "Handcrafted cotton wall art with wooden dowel.", rating: "4.3", stock: "In Stock" },
+    { id: 6, name: "Velvet Throw Pillows Set of 4", image: "throw-pillows.jpg", price: "₹3999", description: "Decorative accent pillows in complementary colors.", rating: "4.5", stock: "Limited Stock" },
+    { id: 7, name: "Brass Floor Planter Stand", image: "planter-stand.jpg", price: "₹5999", description: "Mid-century inspired planter with adjustable height.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Smart LED String Lights", image: "string-lights.jpg", price: "₹2499", description: "App-controlled fairy lights with multiple effects.", rating: "4.7", stock: "In Stock" },
+    { id: 9, name: "Decorative Mirror with Gold Frame", image: "decorative-mirror.jpg", price: "₹9999", description: "Ornate wall mirror with antique finish, 36x48 inches.", rating: "4.8", stock: "Only 2 left" },
+    { id: 10, name: "Ceramic Vase Collection", image: "ceramic-vases.jpg", price: "₹4999", description: "Set of 3 handcrafted vases in different sizes.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Himalayan Salt Lamp", image: "salt-lamp.jpg", price: "₹1999", description: "Natural crystal salt lamp with wooden base and dimmer.", rating: "4.5", stock: "In Stock" },
+    { id: 12, name: "Floating Wall Shelves Set", image: "wall-shelves.jpg", price: "₹3499", description: "Set of 3 wooden shelves in different lengths.", rating: "4.3", stock: "In Stock" },
+    { id: 13, name: "Scented Candle Gift Set", image: "candle-set.jpg", price: "₹2999", description: "Set of 4 premium soy wax candles with essential oils.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "Digital Photo Frame", image: "digital-frame.jpg", price: "₹7999", description: "10-inch frame with WiFi and cloud photo syncing.", rating: "4.5", stock: "In Stock" },
+    { id: 15, name: "Decorative Wooden Room Divider", image: "room-divider.jpg", price: "₹11999", description: "Carved wooden 4-panel screen with artistic design.", rating: "4.7", stock: "In Stock" },
+    { id: 1, name: "Egyptian Cotton Sheet Set", image: "cotton-sheets.jpg", price: "₹8999", description: "1000 thread count sheets with 2 pillowcases, King size.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Down Alternative Comforter", image: "comforter.jpg", price: "₹7999", description: "All-season hypoallergenic duvet insert, Queen size.", rating: "4.7", stock: "In Stock" },
+    { id: 3, name: "Memory Foam Pillows Set of 2", image: "memory-pillows.jpg", price: "₹4999", description: "Cooling gel-infused pillows with removable covers.", rating: "4.9", stock: "Limited Stock" },
+    { id: 4, name: "Weighted Blanket", image: "weighted-blanket.jpg", price: "₹6999", description: "15 lbs therapeutic blanket with micro glass beads.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Duvet Cover Set with Shams", image: "duvet-set.jpg", price: "₹5999", description: "100% cotton printed duvet set, King size.", rating: "4.5", stock: "In Stock" },
+    { id: 6, name: "Luxury Mattress Topper", image: "mattress-topper.jpg", price: "₹9999", description: "3-inch gel memory foam topper, Queen size.", rating: "4.8", stock: "In Stock" },
+    { id: 7, name: "Electric Heated Blanket", image: "heated-blanket.jpg", price: "₹4999", description: "Dual-control heated throw with auto shut-off.", rating: "4.4", stock: "Only 4 left" },
+    { id: 8, name: "Bamboo Bed Sheet Set", image: "bamboo-sheets.jpg", price: "₹7499", description: "Cooling bamboo viscose sheets, 4-piece Queen set.", rating: "4.7", stock: "In Stock" },
+    { id: 9, name: "Adjustable Bed Wedge Pillow", image: "wedge-pillow.jpg", price: "₹3999", description: "Multi-position foam pillow for back and leg support.", rating: "4.6", stock: "In Stock" },
+    { id: 10, name: "Silk Pillowcase Set of 2", image: "silk-pillowcase.jpg", price: "₹4499", description: "100% mulberry silk pillowcases, Standard size.", rating: "4.8", stock: "In Stock" },
+    { id: 11, name: "Decorative Bed Runner", image: "bed-runner.jpg", price: "₹2999", description: "Quilted bed scarf with matching accent pillows.", rating: "4.3", stock: "In Stock" },
+    { id: 12, name: "Waterproof Mattress Protector", image: "mattress-protector.jpg", price: "₹3499", description: "Breathable and hypoallergenic cover, King size.", rating: "4.5", stock: "In Stock" },
+    { id: 13, name: "Kids Bedding Set with Comforter", image: "kids-bedding.jpg", price: "₹4999", description: "5-piece themed bedding set for twin beds.", rating: "4.6", stock: "Low Stock" },
+    { id: 14, name: "Organic Cotton Waffle Throw Blanket", image: "waffle-throw.jpg", price: "₹5499", description: "Textured waffle-weave blanket made from 100% organic cotton, perfect for layering.", rating: "4.5", stock: "In Stock" },
+{ id: 15, name: "Copper-Infused Pillow Protectors Set", image: "copper-protectors.jpg", price: "₹2999", description: "Antimicrobial pillow protectors with copper-infused fabric to inhibit bacteria growth.", rating: "4.7", stock: "New Arrival" },
+            ],
+            "beauty":[
+            { id: 1, name: "Hyaluronic Acid Serum", image: "hyaluronic-serum.jpg", price: "₹1499", description: "Hydrating serum with 2% hyaluronic acid for intense moisture.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Vitamin C Brightening Moisturizer", image: "vitamin-c.jpg", price: "₹1999", description: "Antioxidant-rich moisturizer with 15% vitamin C for radiant skin.", rating: "4.7", stock: "In Stock" },
+    { id: 3, name: "Retinol Night Cream", image: "retinol-cream.jpg", price: "₹2499", description: "Anti-aging night cream with 0.5% retinol and peptides.", rating: "4.9", stock: "Limited Stock" },
+    { id: 4, name: "Clay Purifying Mask", image: "clay-mask.jpg", price: "₹1299", description: "Deep cleansing mask with kaolin clay and activated charcoal.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Gentle Foaming Cleanser", image: "foaming-cleanser.jpg", price: "₹899", description: "pH-balanced cleanser suitable for sensitive skin.", rating: "4.5", stock: "In Stock" },
+    { id: 6, name: "AHA BHA Exfoliating Toner", image: "exfoliating-toner.jpg", price: "₹1699", description: "Chemical exfoliant with fruit acids for smoother skin.", rating: "4.7", stock: "In Stock" },
+    { id: 7, name: "Centella Repair Balm", image: "centella-balm.jpg", price: "₹1299", description: "Soothing repair balm with centella asiatica for damaged skin.", rating: "4.8", stock: "Only 3 left" },
+    { id: 8, name: "SPF 50 Invisible Sunscreen", image: "sunscreen.jpg", price: "₹1199", description: "Lightweight broad-spectrum protection with antioxidants.", rating: "4.9", stock: "In Stock" },
+    { id: 9, name: "Niacinamide Pore Minimizing Serum", image: "niacinamide.jpg", price: "₹1599", description: "10% niacinamide formula to reduce pore appearance.", rating: "4.7", stock: "In Stock" },
+    { id: 10, name: "Hydrating Sheet Mask Set", image: "sheet-masks.jpg", price: "₹999", description: "Pack of 5 hydrating masks with different botanical extracts.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Eye Contour Cream", image: "eye-cream.jpg", price: "₹1899", description: "Peptide-rich cream for dark circles and fine lines.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Snail Mucin Essence", image: "snail-essence.jpg", price: "₹1799", description: "Repairing essence with 96% snail secretion filtrate.", rating: "4.8", stock: "In Stock" },
+    { id: 13, name: "Rosehip Facial Oil", image: "rosehip-oil.jpg", price: "₹1399", description: "Cold-pressed rosehip oil rich in essential fatty acids.", rating: "4.5", stock: "Low Stock" },
+    { id: 14, name: "Salicylic Acid Spot Treatment", image: "spot-treatment.jpg", price: "₹899", description: "Targeted treatment with 2% salicylic acid for blemishes.", rating: "4.6", stock: "In Stock" },
+    { id: 15, name: "Ceramide Barrier Repair Cream", image: "ceramide-cream.jpg", price: "₹2199", description: "Rich moisturizer with ceramides to strengthen skin barrier.", rating: "4.7", stock: "In Stock" },
+   { id: 1, name: "Long-Wear Foundation", image: "foundation.jpg", price: "₹2499", description: "24-hour foundation with 40 shades and matte finish.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Volumizing Mascara", image: "mascara.jpg", price: "₹1299", description: "Smudge-proof mascara for dramatic volume and length.", rating: "4.7", stock: "In Stock" },
+    { id: 3, name: "Matte Liquid Lipstick", image: "liquid-lipstick.jpg", price: "₹1199", description: "Long-lasting liquid lip color in 20 shades.", rating: "4.6", stock: "In Stock" },
+    { id: 4, name: "Eyeshadow Palette - Sunset Edition", image: "eyeshadow-palette.jpg", price: "₹2999", description: "18-shade palette with warm neutrals and vivid sunset tones.", rating: "4.9", stock: "Limited Stock" },
+    { id: 5, name: "Dewy Highlighter", image: "highlighter.jpg", price: "₹1599", description: "Cream highlighter for natural-looking glow.", rating: "4.7", stock: "In Stock" },
+    { id: 6, name: "Brow Defining Pencil", image: "brow-pencil.jpg", price: "₹999", description: "Dual-ended pencil with spoolie for naturally defined brows.", rating: "4.5", stock: "In Stock" },
+    { id: 7, name: "Blurring Primer", image: "primer.jpg", price: "₹1799", description: "Pore-minimizing primer with smoothing effect.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Cream Blush Duo", image: "cream-blush.jpg", price: "₹1399", description: "Buildable cream blush in complementary shades.", rating: "4.7", stock: "Only 5 left" },
+    { id: 9, name: "Setting Powder - Translucent", image: "setting-powder.jpg", price: "₹1899", description: "Finely-milled powder for mattifying and setting makeup.", rating: "4.8", stock: "In Stock" },
+    { id: 10, name: "Waterproof Gel Eyeliner", image: "gel-eyeliner.jpg", price: "₹1099", description: "Smudge-proof gel liner with intense color payoff.", rating: "4.6", stock: "In Stock" },
+    { id: 11, name: "Multi-Use Lip and Cheek Tint", image: "lip-cheek-tint.jpg", price: "₹1299", description: "Versatile tint for natural flush on lips and cheeks.", rating: "4.5", stock: "In Stock" },
+    { id: 12, name: "Makeup Setting Spray", image: "setting-spray.jpg", price: "₹1499", description: "Long-lasting fine mist to lock in makeup for 16 hours.", rating: "4.7", stock: "In Stock" },
+    { id: 13, name: "Cushion Foundation Compact", image: "cushion-foundation.jpg", price: "₹2199", description: "Hydrating cushion foundation with buildable coverage and SPF.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "Contour and Bronzer Palette", image: "contour-palette.jpg", price: "₹1999", description: "6-shade palette for sculpting and warming the complexion.", rating: "4.5", stock: "Low Stock" },
+    { id: 15, name: "Precision Liquid Eyeliner", image: "liquid-eyeliner.jpg", price: "₹999", description: "Ultra-fine tip liner for precise application.", rating: "4.8", stock: "In Stock" },
+    { id: 1, name: "Hydrating Shampoo", image: "hydrating-shampoo.jpg", price: "₹999", description: "Moisturizing shampoo for dry and damaged hair.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Keratin Hair Mask", image: "keratin-mask.jpg", price: "₹1499", description: "Deep conditioning treatment with keratin protein.", rating: "4.8", stock: "In Stock" },
+    { id: 3, name: "Argan Oil Hair Serum", image: "argan-serum.jpg", price: "₹1299", description: "Frizz-control serum with pure argan oil for shine.", rating: "4.6", stock: "In Stock" },
+    { id: 4, name: "Volumizing Dry Shampoo", image: "dry-shampoo.jpg", price: "₹899", description: "Invisible dry shampoo that adds volume and freshness.", rating: "4.5", stock: "In Stock" },
+    { id: 5, name: "Heat Protectant Spray", image: "heat-protectant.jpg", price: "₹1099", description: "Thermal protection up to 450°F with UV filters.", rating: "4.7", stock: "Limited Stock" },
+    { id: 6, name: "Scalp Exfoliating Scrub", image: "scalp-scrub.jpg", price: "₹1199", description: "Detoxifying scrub to remove buildup and flakes.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "Curl Defining Cream", image: "curl-cream.jpg", price: "₹1299", description: "Lightweight cream for bouncy, frizz-free curls.", rating: "4.8", stock: "In Stock" },
+    { id: 8, name: "Protein Bond Repair Treatment", image: "bond-repair.jpg", price: "₹1999", description: "Professional-grade treatment to repair broken bonds.", rating: "4.9", stock: "Only 2 left" },
+    { id: 9, name: "Silk Scrunchie Set", image: "silk-scrunchies.jpg", price: "₹799", description: "Set of 5 pure silk scrunchies to prevent hair damage.", rating: "4.5", stock: "In Stock" },
+    { id: 10, name: "Wide Tooth Detangling Comb", image: "detangling-comb.jpg", price: "₹699", description: "Gentle comb for wet hair to minimize breakage.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Color Protection Conditioner", image: "color-conditioner.jpg", price: "₹1199", description: "Sulfate-free conditioner to preserve hair color vibrancy.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Biotin Hair Growth Serum", image: "biotin-serum.jpg", price: "₹1699", description: "Stimulating serum with biotin and peptides for hair growth.", rating: "4.7", stock: "In Stock" },
+    { id: 13, name: "Moisturizing Leave-In Conditioner", image: "leave-in.jpg", price: "₹999", description: "Lightweight moisturizer for all hair types.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Ceramic Ionic Hair Dryer", image: "hair-dryer.jpg", price: "₹4999", description: "Professional-grade dryer with multiple heat settings.", rating: "4.8", stock: "Low Stock" },
+    { id: 15, name: "Texturizing Hair Spray", image: "texturizing-spray.jpg", price: "₹899", description: "Medium-hold spray for volume and texture.", rating: "4.5", stock: "In Stock" },
+{ id: 1, name: "Chanel N°5 Eau de Parfum", image: "chanel-no5.jpg", price: "₹8,799", description: "Iconic floral aldehyde fragrance with notes of rose, jasmine, and vanilla.", rating: "4.8", stock: "In Stock" },
+{ id: 2, name: "Dior Sauvage Eau de Toilette", image: "dior-sauvage.jpg", price: "₹7,299", description: "Fresh and bold masculine fragrance with bergamot, pepper, and amberwood notes.", rating: "4.7", stock: "In Stock" },
+{ id: 3, name: "Jo Malone London English Pear & Freesia Cologne", image: "jo-malone-pear.jpg", price: "₹6,499", description: "Delicate and fruity scent combining the crisp freshness of pear with white freesia.", rating: "4.6", stock: "In Stock" },
+{ id: 4, name: "Tom Ford Black Orchid Eau de Parfum", image: "tom-ford-black-orchid.jpg", price: "₹9,999", description: "Luxurious and sensual fragrance with black truffle, ylang-ylang, and orchid notes.", rating: "4.9", stock: "Limited Stock" },
+{ id: 5, name: "Yves Saint Laurent Libre Eau de Parfum", image: "ysl-libre.jpg", price: "₹6,999", description: "Modern floral fragrance with lavender, orange blossom, and musk notes.", rating: "4.7", stock: "In Stock" },
+{ id: 6, name: "Bvlgari Man Wood Essence Eau de Parfum", image: "bvlgari-wood.jpg", price: "₹5,999", description: "Woody aromatic fragrance with notes of coriander, cypress, and vetiver.", rating: "4.5", stock: "In Stock" },
+{ id: 7, name: "Versace Eros Eau de Toilette", image: "versace-eros.jpg", price: "₹5,499", description: "Intense masculine fragrance with mint, green apple, and vanilla notes.", rating: "4.6", stock: "In Stock" },
+{ id: 8, name: "Gucci Bloom Eau de Parfum", image: "gucci-bloom.jpg", price: "₹7,899", description: "Rich floral fragrance featuring tuberose, jasmine, and Rangoon creeper.", rating: "4.7", stock: "In Stock" },
+{ id: 9, name: "Creed Aventus Eau de Parfum", image: "creed-aventus.jpg", price: "₹16,999", description: "Luxurious fruity-chypre fragrance with notes of pineapple, birch, and ambergris.", rating: "4.9", stock: "Limited Stock" },
+{ id: 10, name: "Hermès Terre d'Hermès Eau de Toilette", image: "hermes-terre.jpg", price: "₹6,999", description: "Mineral and woody fragrance with grapefruit, pepper, and vetiver notes.", rating: "4.8", stock: "In Stock" },
+{ id: 11, name: "Dolce & Gabbana Light Blue Eau de Toilette", image: "dg-light-blue.jpg", price: "₹5,299", description: "Fresh citrus fragrance with apple, sicilian lemon, and cedarwood notes.", rating: "4.6", stock: "In Stock" },
+{ id: 12, name: "Viktor & Rolf Flowerbomb Eau de Parfum", image: "flowerbomb.jpg", price: "₹8,499", description: "Explosive floral fragrance with jasmine, rose, and patchouli notes.", rating: "4.7", stock: "In Stock" },
+{ id: 13, name: "Maison Francis Kurkdjian Baccarat Rouge 540 Eau de Parfum", image: "baccarat-rouge.jpg", price: "₹17,999", description: "Luxurious amber floral fragrance with jasmine, saffron, and cedar notes.", rating: "4.9", stock: "Limited Stock" },
+{ id: 14, name: "Byredo Gypsy Water Eau de Parfum", image: "byredo-gypsy.jpg", price: "₹14,999", description: "Woody aromatic fragrance with notes of pine needle, sandalwood, and vanilla.", rating: "4.8", stock: "In Stock" },
+{ id: 15, name: "Maison Margiela Replica Jazz Club Eau de Toilette", image: "jazz-club.jpg", price: "₹8,999", description: "Warm and spicy fragrance with notes of pink pepper, rum, and tobacco leaf.", rating: "4.7", stock: "In Stock" }
+
+            ],
+            "sports":[
+            { id: 1, name: "Smart Fitness Tracker Watch", image: "fitness-tracker.jpg", price: "₹3,499", description: "Waterproof fitness tracker with heart rate monitor, step counter, and sleep analysis.", rating: "4.7", stock: "In Stock" },
+{ id: 2, name: "Adjustable Dumbbell Set", image: "dumbbell-set.jpg", price: "₹7,999", description: "Space-saving adjustable dumbbells with weights from 2.5kg to 24kg each.", rating: "4.8", stock: "In Stock" },
+{ id: 3, name: "Yoga Mat Premium", image: "yoga-mat.jpg", price: "₹1,499", description: "Extra thick 6mm non-slip yoga mat with alignment markings and carrying strap.", rating: "4.6", stock: "In Stock" },
+{ id: 4, name: "Resistance Bands Set", image: "resistance-bands.jpg", price: "₹899", description: "Set of 5 resistance bands with different tension levels for strength training.", rating: "4.5", stock: "In Stock" },
+{ id: 5, name: "Foam Roller for Muscle Recovery", image: "foam-roller.jpg", price: "₹999", description: "High-density foam roller for muscle recovery and deep tissue massage.", rating: "4.6", stock: "In Stock" },
+{ id: 6, name: "Smart Body Fat Scale", image: "smart-scale.jpg", price: "₹2,199", description: "Bluetooth body composition analyzer measuring weight, BMI, muscle mass, and more.", rating: "4.7", stock: "In Stock" },
+{ id: 7, name: "Weighted Jump Rope", image: "jump-rope.jpg", price: "₹799", description: "Adjustable weighted jump rope with ball bearings for smooth rotation.", rating: "4.5", stock: "In Stock" },
+{ id: 8, name: "Ab Roller Wheel", image: "ab-roller.jpg", price: "₹599", description: "Core strength trainer with knee pad for abdominal and arm workouts.", rating: "4.4", stock: "In Stock" },
+{ id: 9, name: "Kettlebell Cast Iron", image: "kettlebell.jpg", price: "₹1,899", description: "Cast iron kettlebell with vinyl coating for floor protection, available in multiple weights.", rating: "4.8", stock: "In Stock" },
+{ id: 10, name: "Pull-Up Bar Doorway", image: "pullup-bar.jpg", price: "₹1,299", description: "Multi-grip doorway pull-up bar supporting up to 150kg.", rating: "4.6", stock: "In Stock" },
+{ id: 11, name: "Pilates Reformer Ring", image: "pilates-ring.jpg", price: "₹799", description: "Dual-handled resistance ring for Pilates and isometric exercises.", rating: "4.4", stock: "In Stock" },
+{ id: 12, name: "Balance Ball Chair", image: "balance-ball-chair.jpg", price: "₹3,499", description: "Ergonomic chair with exercise ball for improved posture and core strength.", rating: "4.5", stock: "Limited Stock" },
+{ id: 13, name: "Suspension Training System", image: "suspension-trainer.jpg", price: "₹2,999", description: "Body weight resistance training system with anchoring door strap.", rating: "4.8", stock: "In Stock" },
+{ id: 14, name: "Push-Up Stands", image: "pushup-stands.jpg", price: "₹699", description: "Ergonomic push-up handles for reduced wrist strain and deeper range of motion.", rating: "4.3", stock: "In Stock" },
+{ id: 15, name: "Massage Gun Deep Tissue", image: "massage-gun.jpg", price: "₹4,999", description: "Percussion massage device with 5 attachments and 5 speed settings for muscle recovery.", rating: "4.9", stock: "In Stock" },
+{ id: 1, name: "Ultralight Backpacking Tent", image: "backpacking-tent.jpg", price: "₹9,999", description: "Two-person waterproof tent weighing only 1.3kg, perfect for trekking and hiking.", rating: "4.8", stock: "In Stock" },
+{ id: 2, name: "Hydration Backpack", image: "hydration-pack.jpg", price: "₹2,499", description: "Lightweight 15L backpack with 2L water reservoir and multiple storage compartments.", rating: "4.7", stock: "In Stock" },
+{ id: 3, name: "Solar Power Bank", image: "solar-powerbank.jpg", price: "₹1,999", description: "20000mAh solar charging power bank with dual USB ports for outdoor adventures.", rating: "4.5", stock: "In Stock" },
+{ id: 4, name: "Portable Camping Stove", image: "camping-stove.jpg", price: "₹1,599", description: "Compact butane stove with piezo ignition and wind protection panels.", rating: "4.6", stock: "In Stock" },
+{ id: 5, name: "All-Weather Sleeping Bag", image: "sleeping-bag.jpg", price: "₹3,499", description: "Mummy-style sleeping bag rated for -10°C with water-resistant outer shell.", rating: "4.8", stock: "In Stock" },
+{ id: 6, name: "LED Headlamp", image: "headlamp.jpg", price: "₹899", description: "Rechargeable headlamp with 300 lumens brightness and adjustable beam angle.", rating: "4.6", stock: "In Stock" },
+{ id: 7, name: "Trekking Poles Pair", image: "trekking-poles.jpg", price: "₹1,799", description: "Adjustable aluminum trekking poles with cork grips and snow baskets.", rating: "4.7", stock: "In Stock" },
+{ id: 8, name: "Camping Hammock", image: "camping-hammock.jpg", price: "₹1,299", description: "Lightweight parachute nylon hammock with tree straps and carabiners.", rating: "4.5", stock: "In Stock" },
+{ id: 9, name: "Portable Water Filter", image: "water-filter.jpg", price: "₹2,299", description: "Compact water filter removing 99.9% of bacteria and parasites, filters up to 1000L.", rating: "4.9", stock: "In Stock" },
+{ id: 10, name: "Outdoor Survival Kit", image: "survival-kit.jpg", price: "₹1,499", description: "Comprehensive survival kit with first aid supplies, fire starter, and multi-tool.", rating: "4.7", stock: "In Stock" },
+{ id: 11, name: "Insulated Camping Mug", image: "camping-mug.jpg", price: "₹799", description: "Double-wall vacuum insulated stainless steel mug with lid, keeps drinks hot for 6 hours.", rating: "4.6", stock: "In Stock" },
+{ id: 12, name: "Folding Camp Chair", image: "camp-chair.jpg", price: "₹1,999", description: "Lightweight portable chair with cup holder and storage pocket, supports up to 120kg.", rating: "4.5", stock: "In Stock" },
+{ id: 13, name: "Inflatable Sleeping Pad", image: "sleeping-pad.jpg", price: "₹2,499", description: "Ultralight inflatable sleeping pad with R-value of 4.2 for four-season camping.", rating: "4.8", stock: "Limited Stock" },
+{ id: 14, name: "Waterproof Dry Bag Set", image: "dry-bags.jpg", price: "₹999", description: "Set of 3 waterproof dry bags (5L, 10L, 20L) for keeping gear dry during outdoor activities.", rating: "4.7", stock: "In Stock" },
+{ id: 15, name: "Multi-Tool Pocket Knife", image: "multi-tool.jpg", price: "₹1,699", description: "Stainless steel multi-tool with 14 functions including pliers, knife, and screwdrivers.", rating: "4.8", stock: "In Stock" },
+{ id: 1, name: "Premium Badminton Racket", image: "badminton-racket.jpg", price: "₹2,999", description: "Lightweight carbon fiber badminton racket with string tension up to 30lbs.", rating: "4.7", stock: "In Stock" },
+{ id: 2, name: "Cricket Bat English Willow", image: "cricket-bat.jpg", price: "₹6,999", description: "Grade 1 English willow cricket bat with protective toe guard and premium grip.", rating: "4.8", stock: "In Stock" },
+{ id: 3, name: "Football Size 5", image: "football.jpg", price: "₹1,299", description: "Match-quality football with water-resistant synthetic leather cover.", rating: "4.6", stock: "In Stock" },
+{ id: 4, name: "Basketball Indoor/Outdoor", image: "basketball.jpg", price: "₹999", description: "Composite leather basketball suitable for both indoor and outdoor courts.", rating: "4.5", stock: "In Stock" },
+{ id: 5, name: "Table Tennis Paddle Set", image: "tt-paddle-set.jpg", price: "₹1,499", description: "Set of 2 professional paddles with 3 balls and carrying case.", rating: "4.6", stock: "In Stock" },
+{ id: 6, name: "Tennis Racket Pro", image: "tennis-racket.jpg", price: "₹4,999", description: "Graphite-composite tennis racket with vibration dampening technology.", rating: "4.7", stock: "In Stock" },
+{ id: 7, name: "Golf Putter", image: "golf-putter.jpg", price: "₹3,499", description: "Mallet-style putter with alignment guide and soft face insert.", rating: "4.5", stock: "In Stock" },
+{ id: 8, name: "Volleyball Indoor", image: "volleyball.jpg", price: "₹899", description: "Soft-touch volleyball with 18-panel design for accurate flight.", rating: "4.4", stock: "In Stock" },
+{ id: 9, name: "Hockey Stick Composite", image: "hockey-stick.jpg", price: "₹1,899", description: "Carbon-fiberglass composite field hockey stick with cushioned grip.", rating: "4.6", stock: "In Stock" },
+{ id: 10, name: "Boxing Gloves 12oz", image: "boxing-gloves.jpg", price: "₹1,699", description: "Genuine leather boxing gloves with multi-layered foam padding and wrist support.", rating: "4.7", stock: "In Stock" },
+{ id: 11, name: "Squash Racket", image: "squash-racket.jpg", price: "₹2,299", description: "Teardrop-shaped squash racket with vibration dampening system.", rating: "4.5", stock: "In Stock" },
+{ id: 12, name: "Carrom Board Tournament", image: "carrom-board.jpg", price: "₹2,999", description: "Full-size tournament carrom board with coins, striker, and powder.", rating: "4.8", stock: "Limited Stock" },
+{ id: 13, name: "Dartboard Professional", image: "dartboard.jpg", price: "₹1,999", description: "Self-healing sisal fiber dartboard with mounting hardware and 6 steel tip darts.", rating: "4.6", stock: "In Stock" },
+{ id: 14, name: "Skipping Rope Professional", image: "skipping-rope.jpg", price: "₹699", description: "Adjustable speed rope with ball bearing handles for smooth rotation.", rating: "4.5", stock: "In Stock" },
+{ id: 15, name: "Yoga Block Set", image: "yoga-blocks.jpg", price: "₹799", description: "Set of 2 high-density EVA foam yoga blocks for support and stability in poses.", rating: "4.7", stock: "In Stock" },
+{ id: 1, name: "Men's Compression T-shirt", image: "compression-tshirt.jpg", price: "₹1,299", description: "Quick-dry compression t-shirt with four-way stretch and anti-odor technology.", rating: "4.6", stock: "In Stock" },
+{ id: 2, name: "Women's Running Leggings", image: "running-leggings.jpg", price: "₹1,799", description: "High-waisted running leggings with side pockets and reflective details.", rating: "4.8", stock: "In Stock" },
+{ id: 3, name: "Men's Training Shorts", image: "training-shorts.jpg", price: "₹999", description: "Lightweight training shorts with built-in liner and zippered pocket.", rating: "4.7", stock: "In Stock" },
+{ id: 4, name: "Women's Sports Bra Medium Support", image: "sports-bra.jpg", price: "₹1,499", description: "Medium support racerback sports bra with moisture-wicking fabric.", rating: "4.7", stock: "In Stock" },
+{ id: 5, name: "Unisex Running Jacket", image: "running-jacket.jpg", price: "₹2,499", description: "Waterproof running jacket with reflective elements and packable hood.", rating: "4.6", stock: "In Stock" },
+{ id: 6, name: "Men's Gym Tank Top", image: "gym-tank.jpg", price: "₹799", description: "Sleeveless gym tank with dropped armholes and moisture management.", rating: "4.5", stock: "In Stock" },
+{ id: 7, name: "Women's Tennis Skirt", image: "tennis-skirt.jpg", price: "₹1,299", description: "Pleated tennis skirt with built-in shorts and ball pocket.", rating: "4.7", stock: "In Stock" },
+{ id: 8, name: "Men's Track Pants", image: "track-pants.jpg", price: "₹1,499", description: "Tapered track pants with zip pockets and ankle zippers.", rating: "4.6", stock: "In Stock" },
+{ id: 9, name: "Women's Yoga Top", image: "yoga-top.jpg", price: "₹899", description: "Lightweight yoga top with built-in shelf bra and cross-back design.", rating: "4.6", stock: "In Stock" },
+{ id: 10, name: "Unisex Swimming Goggles", image: "swimming-goggles.jpg", price: "₹699", description: "Anti-fog swimming goggles with UV protection and adjustable strap.", rating: "4.5", stock: "In Stock" },
+{ id: 11, name: "Men's Football Jerseys", image: "football-jersey.jpg", price: "₹999", description: "Quick-dry polyester football jersey with ventilation panels.", rating: "4.4", stock: "In Stock" },
+{ id: 12, name: "Men's Seamless Workout Henley", image: "seamless-henley.jpg", price: "₹1,499", description: "Stretchy seamless henley with targeted ventilation and thumbhole sleeves.", rating: "4.6", stock: "In Stock" },
+{ id: 13, name: "Women's Crossover Sports Bralette", image: "crossover-bralette.jpg", price: "₹1,299", description: "Stylish crossover bralette with light support and moisture-wicking fabric.", rating: "4.7", stock: "In Stock" },
+{ id: 14, name: "Unisex Performance Hoodie", image: "performance-hoodie.jpg", price: "₹2,199", description: "Lightweight performance hoodie with temperature regulation and thumbholes.", rating: "4.8", stock: "In Stock" },
+{ id: 15, name: "Women's 2-in-1 Running Shorts", image: "2in1-shorts.jpg", price: "₹1,399", description: "Dual-layer running shorts with compression liner and quick-dry outer layer.", rating: "4.9", stock: "In Stock" }
+            ],
+            "toys":[
+            { id: 1, name: "Remote Control Car", image: "rc-car.jpg", price: "₹799", description: "High-speed RC car with rechargeable battery.", rating: "4.6", stock: "In Stock" },
+    { id: 2, name: "Plastic Building Blocks Set", image: "blocks.jpg", price: "₹499", description: "120-piece colorful building blocks for kids.", rating: "4.7", stock: "Only 5 left" },
+    { id: 3, name: "Stuffed Teddy Bear", image: "teddy.jpg", price: "₹299", description: "Soft and cuddly teddy bear for kids.", rating: "4.5", stock: "In Stock" },
+    { id: 4, name: "Musical Piano Toy", image: "piano.jpg", price: "₹599", description: "Mini piano with lights and sounds.", rating: "4.4", stock: "In Stock" },
+    { id: 5, name: "Dinosaur Action Figure Set", image: "dino.jpg", price: "₹349", description: "Set of 5 realistic dinosaur figures.", rating: "4.3", stock: "Only 2 left" },
+    { id: 6, name: "Toy Doctor Kit", image: "doctor-kit.jpg", price: "₹449", description: "Complete pretend play doctor set.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "Barbie Doll Set", image: "barbie.jpg", price: "₹699", description: "Barbie doll with accessories.", rating: "4.5", stock: "In Stock" },
+    { id: 8, name: "Toy Kitchen Set", image: "kitchen.jpg", price: "₹999", description: "Mini kitchen with utensils and pretend food.", rating: "4.7", stock: "Only 3 left" },
+    { id: 9, name: "Bubble Machine", image: "bubble.jpg", price: "₹399", description: "Automatic bubble blower for kids.", rating: "4.4", stock: "In Stock" },
+    { id: 10, name: "LEGO City Set", image: "lego.jpg", price: "₹1299", description: "Build your own city with LEGO bricks.", rating: "4.8", stock: "In Stock" },
+    { id: 11, name: "Toy Train Set", image: "train.jpg", price: "₹899", description: "Electric train set with tracks.", rating: "4.6", stock: "Only 4 left" },
+    { id: 12, name: "Water Gun", image: "water-gun.jpg", price: "₹199", description: "High-capacity water gun for outdoor fun.", rating: "4.3", stock: "In Stock" },
+    { id: 13, name: "Plastic Bowling Set", image: "bowling.jpg", price: "₹499", description: "10-pin bowling set for kids.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Toy Guitar", image: "guitar.jpg", price: "₹599", description: "Mini guitar with lights and sounds.", rating: "4.4", stock: "Only 1 left" },
+    { id: 15, name: "Animal Figurines Set", image: "animals.jpg", price: "₹299", description: "Set of 12 realistic animal figures.", rating: "4.2", stock: "In Stock" },
+    { id: 1, name: "Monopoly Classic", image: "monopoly.jpg", price: "₹1499", description: "Classic property trading board game.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Scrabble", image: "scrabble.jpg", price: "₹999", description: "Word-building board game for all ages.", rating: "4.6", stock: "Only 2 left" },
+    { id: 3, name: "Chess Set", image: "chess.jpg", price: "₹499", description: "Wooden chess set with storage.", rating: "4.5", stock: "In Stock" },
+    { id: 4, name: "Ludo Board Game", image: "ludo.jpg", price: "₹299", description: "Classic Ludo game for family fun.", rating: "4.4", stock: "In Stock" },
+    { id: 5, name: "Catan Board Game", image: "catan.jpg", price: "₹1999", description: "Strategy-based resource management game.", rating: "4.8", stock: "Only 3 left" },
+    { id: 6, name: "Jenga Tower Game", image: "jenga.jpg", price: "₹599", description: "Stacking and balancing wooden blocks.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "Risk Board Game", image: "risk.jpg", price: "₹1299", description: "World domination strategy game.", rating: "4.7", stock: "In Stock" },
+    { id: 8, name: "Clue Mystery Game", image: "clue.jpg", price: "₹899", description: "Solve the mystery in this classic game.", rating: "4.5", stock: "Only 1 left" },
+    { id: 9, name: "Pictionary", image: "pictionary.jpg", price: "₹699", description: "Drawing and guessing board game.", rating: "4.4", stock: "In Stock" },
+    { id: 10, name: "Sequence Board Game", image: "sequence.jpg", price: "₹799", description: "Strategy and card-based board game.", rating: "4.6", stock: "In Stock" },
+    { id: 11, name: "Uno Card Game", image: "uno.jpg", price: "₹199", description: "Fast-paced family card game.", rating: "4.5", stock: "Only 4 left" },
+    { id: 12, name: "Ticket to Ride", image: "ticket.jpg", price: "₹1799", description: "Train adventure strategy game.", rating: "4.8", stock: "In Stock" },
+    { id: 13, name: "Codenames", image: "codenames.jpg", price: "₹899", description: "Word-based spy game.", rating: "4.7", stock: "In Stock" },
+    { id: 14, name: "Exploding Kittens", image: "kittens.jpg", price: "₹499", description: "Hilarious card game for all ages.", rating: "4.6", stock: "Only 2 left" },
+    { id: 15, name: "Cards Against Humanity", image: "cah.jpg", price: "₹999", description: "Adult party game for outrageous fun.", rating: "4.5", stock: "In Stock" },
+    { id: 1, name: "1000-Piece Jigsaw Puzzle", image: "jigsaw.jpg", price: "₹499", description: "Landscape-themed jigsaw puzzle.", rating: "4.6", stock: "In Stock" },
+    { id: 2, name: "3D Wooden Puzzle", image: "wooden.jpg", price: "₹699", description: "3D wooden puzzle of the Eiffel Tower.", rating: "4.7", stock: "Only 3 left" },
+    { id: 3, name: "500-Piece Animal Puzzle", image: "animal.jpg", price: "₹299", description: "Colorful animal-themed puzzle.", rating: "4.5", stock: "In Stock" },
+    { id: 4, name: "Ravensburger Puzzle", image: "ravensburger.jpg", price: "₹899", description: "High-quality 1000-piece puzzle.", rating: "4.8", stock: "In Stock" },
+    { id: 5, name: "Glow-in-the-Dark Puzzle", image: "glow.jpg", price: "₹599", description: "Space-themed glow-in-the-dark puzzle.", rating: "4.4", stock: "Only 2 left" },
+    { id: 6, name: "Kids Cartoon Puzzle", image: "cartoon.jpg", price: "₹199", description: "24-piece puzzle for kids.", rating: "4.3", stock: "In Stock" },
+    { id: 7, name: "World Map Puzzle", image: "map.jpg", price: "₹499", description: "Educational world map puzzle.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Mystery Puzzle Box", image: "mystery.jpg", price: "₹799", description: "Solve the mystery with this puzzle box.", rating: "4.7", stock: "Only 1 left" },
+    { id: 9, name: "3D Crystal Puzzle", image: "crystal.jpg", price: "₹399", description: "Crystal-shaped 3D puzzle.", rating: "4.5", stock: "In Stock" },
+    { id: 10, name: "Harry Potter Puzzle", image: "harry.jpg", price: "₹699", description: "Harry Potter-themed 500-piece puzzle.", rating: "4.6", stock: "In Stock" },
+    { id: 11, name: "Puzzle Ball", image: "ball.jpg", price: "₹299", description: "Spherical puzzle for a unique challenge.", rating: "4.4", stock: "Only 4 left" },
+    { id: 12, name: "Custom Photo Puzzle", image: "photo.jpg", price: "₹999", description: "Create a puzzle from your own photo.", rating: "4.8", stock: "In Stock" },
+    { id: 13, name: "Double-Sided Puzzle", image: "double.jpg", price: "₹599", description: "Two puzzles in one with double-sided pieces.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Magnetic Travel Puzzle", image: "magnetic.jpg", price: "₹349", description: "Portable magnetic puzzle for travel.", rating: "4.3", stock: "Only 2 left" },
+    { id: 15, name: "Gradient Puzzle", image: "gradient.jpg", price: "₹499", description: "Color gradient-themed 1000-piece puzzle.", rating: "4.7", stock: "In Stock" },
+    { id: 1, name: "Frisbee", image: "frisbee.jpg", price: "₹199", description: "Durable flying disc for outdoor fun.", rating: "4.5", stock: "In Stock" },
+    { id: 2, name: "Inflatable Pool", image: "pool.jpg", price: "₹1499", description: "Large inflatable pool for kids.", rating: "4.6", stock: "Only 3 left" },
+    { id: 3, name: "Kite", image: "kite.jpg", price: "₹299", description: "Colorful kite for windy days.", rating: "4.4", stock: "In Stock" },
+    { id: 4, name: "Soccer Ball", image: "soccer.jpg", price: "₹499", description: "Durable soccer ball for outdoor play.", rating: "4.7", stock: "In Stock" },
+    { id: 5, name: "Water Slide", image: "slide.jpg", price: "₹1999", description: "Inflatable water slide for summer fun.", rating: "4.8", stock: "Only 2 left" },
+    { id: 6, name: "Bubble Lawn Mower", image: "mower.jpg", price: "₹399", description: "Bubble-blowing toy lawn mower.", rating: "4.5", stock: "In Stock" },
+    { id: 7, name: "Nerf Gun", image: "nerf.jpg", price: "₹599", description: "Foam dart blaster for outdoor battles.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Jump Rope", image: "rope.jpg", price: "₹149", description: "Adjustable jump rope for kids.", rating: "4.3", stock: "Only 4 left" },
+    { id: 9, name: "Sand Play Set", image: "sand.jpg", price: "₹499", description: "Bucket, shovel, and molds for sand play.", rating: "4.5", stock: "In Stock" },
+    { id: 10, name: "Hula Hoop", image: "hoop.jpg", price: "₹299", description: "Colorful hula hoop for kids.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Trampoline", image: "trampoline.jpg", price: "₹4999", description: "Mini trampoline for kids.", rating: "4.7", stock: "Only 1 left" },
+    { id: 12, name: "Water Balloons", image: "balloons.jpg", price: "₹99", description: "Pack of 100 water balloons.", rating: "4.3", stock: "In Stock" },
+    { id: 13, name: "Play Tent", image: "tent.jpg", price: "₹899", description: "Pop-up play tent for kids.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "RC Helicopter", image: "helicopter.jpg", price: "₹1299", description: "Remote-controlled helicopter.", rating: "4.5", stock: "Only 2 left" },
+    { id: 15, name: "Outdoor Bowling Set", image: "bowling-outdoor.jpg", price: "₹699", description: "10-pin bowling set for outdoor play.", rating: "4.4", stock: "In Stock" }
+
+            ],
+            "books":[
+            { id: 1, name: "The Alchemist", image: "alchemist.jpg", price: "₹299", description: "A novel by Paulo Coelho about following your dreams.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Harry Potter and the Sorcerer's Stone", image: "harry-potter.jpg", price: "₹499", description: "The first book in the Harry Potter series by J.K. Rowling.", rating: "4.9", stock: "Only 3 left" },
+    { id: 3, name: "1984", image: "1984.jpg", price: "₹349", description: "A dystopian novel by George Orwell.", rating: "4.8", stock: "In Stock" },
+    { id: 4, name: "The Great Gatsby", image: "gatsby.jpg", price: "₹279", description: "A classic novel by F. Scott Fitzgerald.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "To Kill a Mockingbird", image: "mockingbird.jpg", price: "₹399", description: "A Pulitzer Prize-winning novel by Harper Lee.", rating: "4.7", stock: "Only 2 left" },
+    { id: 6, name: "Pride and Prejudice", image: "pride.jpg", price: "₹249", description: "A romantic novel by Jane Austen.", rating: "4.5", stock: "In Stock" },
+    { id: 7, name: "The Hobbit", image: "hobbit.jpg", price: "₹449", description: "A fantasy novel by J.R.R. Tolkien.", rating: "4.8", stock: "In Stock" },
+    { id: 8, name: "The Catcher in the Rye", image: "catcher.jpg", price: "₹299", description: "A classic novel by J.D. Salinger.", rating: "4.6", stock: "Only 1 left" },
+    { id: 9, name: "The Lord of the Rings", image: "lotr.jpg", price: "₹999", description: "A fantasy trilogy by J.R.R. Tolkien.", rating: "4.9", stock: "In Stock" },
+    { id: 10, name: "The Da Vinci Code", image: "davinci.jpg", price: "₹399", description: "A thriller novel by Dan Brown.", rating: "4.5", stock: "In Stock" },
+    { id: 11, name: "The Kite Runner", image: "kite.jpg", price: "₹349", description: "A novel by Khaled Hosseini.", rating: "4.7", stock: "Only 4 left" },
+    { id: 12, name: "The Chronicles of Narnia", image: "narnia.jpg", price: "₹599", description: "A fantasy series by C.S. Lewis.", rating: "4.8", stock: "In Stock" },
+    { id: 13, name: "The Girl on the Train", image: "girl-train.jpg", price: "₹299", description: "A psychological thriller by Paula Hawkins.", rating: "4.4", stock: "In Stock" },
+    { id: 14, name: "The Hunger Games", image: "hunger-games.jpg", price: "₹399", description: "A dystopian novel by Suzanne Collins.", rating: "4.7", stock: "Only 2 left" },
+    { id: 15, name: "The Shining", image: "shining.jpg", price: "₹449", description: "A horror novel by Stephen King.", rating: "4.6", stock: "In Stock" },
+    { id: 1, name: "Sapiens: A Brief History of Humankind", image: "sapiens.jpg", price: "₹499", description: "A book by Yuval Noah Harari about human history.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Atomic Habits", image: "atomic.jpg", price: "₹399", description: "A self-help book by James Clear.", rating: "4.9", stock: "Only 3 left" },
+    { id: 3, name: "Becoming", image: "becoming.jpg", price: "₹599", description: "Michelle Obama's memoir.", rating: "4.7", stock: "In Stock" },
+    { id: 4, name: "The Subtle Art of Not Giving a F*ck", image: "subtle.jpg", price: "₹299", description: "A self-help book by Mark Manson.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Educated", image: "educated.jpg", price: "₹499", description: "A memoir by Tara Westover.", rating: "4.8", stock: "Only 2 left" },
+    { id: 6, name: "Thinking, Fast and Slow", image: "thinking.jpg", price: "₹599", description: "A book by Daniel Kahneman about decision-making.", rating: "4.7", stock: "In Stock" },
+    { id: 7, name: "The Power of Now", image: "now.jpg", price: "₹349", description: "A spiritual guidebook by Eckhart Tolle.", rating: "4.5", stock: "In Stock" },
+    { id: 8, name: "Quiet: The Power of Introverts", image: "quiet.jpg", price: "₹399", description: "A book by Susan Cain about introversion.", rating: "4.6", stock: "Only 1 left" },
+    { id: 9, name: "The 7 Habits of Highly Effective People", image: "habits.jpg", price: "₹449", description: "A self-help book by Stephen R. Covey.", rating: "4.7", stock: "In Stock" },
+    { id: 10, name: "Outliers: The Story of Success", image: "outliers.jpg", price: "₹299", description: "A book by Malcolm Gladwell.", rating: "4.6", stock: "In Stock" },
+    { id: 11, name: "The Diary of a Young Girl", image: "diary.jpg", price: "₹199", description: "Anne Frank's diary during WWII.", rating: "4.8", stock: "Only 4 left" },
+    { id: 12, name: "The Art of War", image: "war.jpg", price: "₹149", description: "A classic book on strategy by Sun Tzu.", rating: "4.5", stock: "In Stock" },
+    { id: 13, name: "Freakonomics", image: "freakonomics.jpg", price: "₹399", description: "A book exploring economics in everyday life.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "The Four Agreements", image: "agreements.jpg", price: "₹249", description: "A self-help book by Don Miguel Ruiz.", rating: "4.7", stock: "Only 2 left" },
+    { id: 15, name: "Born a Crime", image: "crime.jpg", price: "₹499", description: "Trevor Noah's memoir about growing up in South Africa.", rating: "4.8", stock: "In Stock" },
+    { id: 1, name: "Premium Notebook", image: "notebook.jpg", price: "₹199", description: "A5-sized ruled notebook.", rating: "4.5", stock: "In Stock" },
+    { id: 2, name: "Gel Pens (Pack of 10)", image: "gel-pens.jpg", price: "₹149", description: "Smooth-writing gel pens in assorted colors.", rating: "4.6", stock: "Only 3 left" },
+    { id: 3, name: "Sticky Notes", image: "sticky.jpg", price: "₹99", description: "Pack of 100 sticky notes in assorted colors.", rating: "4.4", stock: "In Stock" },
+    { id: 4, name: "Mechanical Pencil", image: "pencil.jpg", price: "₹49", description: "0.5mm mechanical pencil with refill.", rating: "4.3", stock: "In Stock" },
+    { id: 5, name: "Whiteboard Marker Set", image: "marker.jpg", price: "₹199", description: "Set of 4 whiteboard markers.", rating: "4.5", stock: "Only 2 left" },
+    { id: 6, name: "Plastic File Folder", image: "folder.jpg", price: "₹79", description: "A4-sized plastic file folder.", rating: "4.2", stock: "In Stock" },
+    { id: 7, name: "Desk Organizer", image: "organizer.jpg", price: "₹499", description: "Wooden desk organizer for stationery.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Highlighters (Pack of 6)", image: "highlighters.jpg", price: "₹129", description: "Assorted color highlighters.", rating: "4.5", stock: "Only 1 left" },
+    { id: 9, name: "A4 Sheet Pack", image: "a4.jpg", price: "₹199", description: "Pack of 500 A4 sheets.", rating: "4.4", stock: "In Stock" },
+    { id: 10, name: "Correction Tape", image: "tape.jpg", price: "₹59", description: "Smooth correction tape for errors.", rating: "4.3", stock: "In Stock" },
+    { id: 11, name: "Stapler with Staples", image: "stapler.jpg", price: "₹149", description: "Heavy-duty stapler with 1000 staples.", rating: "4.5", stock: "Only 4 left" },
+    { id: 12, name: "Scissors", image: "scissors.jpg", price: "₹99", description: "Sharp stainless steel scissors.", rating: "4.4", stock: "In Stock" },
+    { id: 13, name: "Eraser Pack", image: "eraser.jpg", price: "₹49", description: "Pack of 5 high-quality erasers.", rating: "4.3", stock: "In Stock" },
+    { id: 14, name: "Ruler Set", image: "ruler.jpg", price: "₹79", description: "Set of 3 rulers (15cm, 30cm, 45cm).", rating: "4.2", stock: "Only 2 left" },
+    { id: 15, name: "Pencil Case", image: "pencil-case.jpg", price: "₹199", description: "Durable fabric pencil case.", rating: "4.5", stock: "In Stock" },
+    { id: 1, name: "Acrylic Paint Set", image: "acrylic.jpg", price: "₹499", description: "Set of 12 acrylic paints with brushes.", rating: "4.6", stock: "In Stock" },
+    { id: 2, name: "Sketchbook", image: "sketchbook.jpg", price: "₹299", description: "A4-sized sketchbook for artists.", rating: "4.5", stock: "Only 3 left" },
+    { id: 3, name: "Watercolor Paint Set", image: "watercolor.jpg", price: "₹399", description: "Set of 24 watercolor paints.", rating: "4.7", stock: "In Stock" },
+    { id: 4, name: "Drawing Pencils (Set of 12)", image: "pencils.jpg", price: "₹199", description: "Graphite pencils in various grades.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Oil Paint Set", image: "oil.jpg", price: "₹799", description: "Set of 6 oil paints with palette.", rating: "4.8", stock: "Only 2 left" },
+    { id: 6, name: "Easel Stand", image: "easel.jpg", price: "₹1499", description: "Adjustable wooden easel stand.", rating: "4.7", stock: "In Stock" },
+    { id: 7, name: "Brush Set", image: "brush.jpg", price: "₹299", description: "Set of 10 paintbrushes for various techniques.", rating: "4.5", stock: "In Stock" },
+    { id: 8, name: "Canvas Boards (Pack of 5)", image: "canvas.jpg", price: "₹499", description: "Primed canvas boards for painting.", rating: "4.6", stock: "Only 1 left" },
+    { id: 9, name: "Charcoal Pencils", image: "charcoal.jpg", price: "₹149", description: "Set of 6 charcoal pencils.", rating: "4.4", stock: "In Stock" },
+    { id: 10, name: "Pastel Set", image: "pastel.jpg", price: "₹599", description: "Set of 24 soft pastels.", rating: "4.7", stock: "In Stock" },
+    { id: 11, name: "Palette Knife Set", image: "knife.jpg", price: "₹199", description: "Set of 5 palette knives for painting.", rating: "4.5", stock: "Only 4 left" },
+    { id: 12, name: "Art Marker Set", image: "marker-art.jpg", price: "₹399", description: "Set of 12 dual-tip art markers.", rating: "4.6", stock: "In Stock" },
+    { id: 13, name: "Calligraphy Pen Set", image: "calligraphy.jpg", price: "₹299", description: "Set of 3 calligraphy pens with ink.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Spray Paint Set", image: "spray.jpg", price: "₹499", description: "Set of 6 spray paints for graffiti art.", rating: "4.4", stock: "Only 2 left" },
+    { id: 15, name: "Art Supply Case", image: "art-case.jpg", price: "₹699", description: "Portable case for art supplies.", rating: "4.6", stock: "In Stock" }
+
+            ],
+            "men-fashion": [
+            { id: 1, name: "Men Printed Round Neck Polyester Multicolor T-Shirt", image: "mf-p1.jpg", price: "₹499", description: "Comfortable cotton T-shirt.", rating: "4.5", stock: "In Stock" },
+                { id: 2, name: "Men Regular Fit Checkered Spread Collar Casual Shirt", image: "mf-p2.jpg", price: "₹899", description: "casual-fit cotton shirt .", rating: "4.7", stock: "Only 3 left" },
+                { id: 3, name: "Men Slim Fit Black Stretch Jeans", image: "mf-p3.jpg", price: "₹1299", description: "Premium stretch denim for maximum comfort.", rating: "4.6", stock: "In Stock" },
+                { id: 4, name: "Men's Pure Cotton Mandarin Collar Kurta", image: "mf-p4.jpg", price: "₹799", description: "Traditional kurta with modern styling.", rating: "4.3", stock: "In Stock" },
+                { id: 5, name: "Men Navy Blue Solid Bomber Jacket", image: "mf-p5.jpg", price: "₹1799", description: "Lightweight bomber jacket for casual outings.", rating: "4.8", stock: "Low Stock" },
+                { id: 6, name: "Men's Formal Oxford Leather Shoes - Brown", image: "mf-p6.jpg", price: "₹2499", description: "Genuine leather formal shoes with cushioned insole.", rating: "4.7", stock: "In Stock" },
+                { id: 7, name: "Men's Hooded Sweatshirt - Grey Melange", image: "mf-p7.jpg", price: "₹999", description: "Soft fleece hoodie for everyday wear.", rating: "4.4", stock: "In Stock" },
+                { id: 8, name: "Men's Slim Fit Formal Trousers", image: "mf-p8.jpg", price: "₹1399", description: "Wrinkle-resistant formal trousers for office wear.", rating: "4.2", stock: "In Stock" },
+                { id: 9, name: "Men's Analogue Watch with Leather Strap", image: "mf-p9.jpg", price: "₹2999", description: "Classic timepiece with genuine leather strap.", rating: "4.9", stock: "Only 2 left" },
+                { id: 10, name: "Men's Printed Casual Shorts", image: "mf-p10.jpg", price: "₹699", description: "Comfortable cotton shorts for summer.", rating: "4.3", stock: "In Stock" },
+                { id: 11, name: "Men's Running Shoes with Breathable Mesh", image: "mf-p11.jpg", price: "₹1899", description: "Lightweight running shoes with superior cushioning.", rating: "4.6", stock: "In Stock" },
+                { id: 12, name: "Men's Patterned Silk Necktie", image: "mf-p12.jpg", price: "₹799", description: "Premium silk tie with subtle pattern.", rating: "4.5", stock: "In Stock" },
+                { id: 13, name: "Men's Lightweight Linen Blazer", image: "mf-p13.jpg", price: "₹2799", description: "Breathable linen blazer perfect for summer formals.", rating: "4.4", stock: "In Stock" },
+                { id: 14, name: "Men's Polarized Aviator Sunglasses", image: "mf-p14.jpg", price: "₹1499", description: "UV protection sunglasses with metal frame.", rating: "4.7", stock: "Limited Stock" },
+                { id: 15, name: "Men's Leather Belt with Classic Buckle", image: "mf-p15.jpg", price: "₹899", description: "Genuine leather belt for formal and casual wear.", rating: "4.5", stock: "In Stock" },
+                ],
+            "women-fashion": [
+                { id: 1, name: "Women's Floral Print Maxi Dress", image: "wf-p1.jpg", price: "₹1299", description: "Elegant floral maxi dress with adjustable straps.", rating: "4.6", stock: "In Stock" },
+                { id: 2, name: "Women's High-Waist Skinny Jeans", image: "wf-p2.jpg", price: "₹1499", description: "Stretchable denim jeans for perfect fit.", rating: "4.7", stock: "In Stock" },
+                { id: 3, name: "Women's Embroidered Kurta with Palazzo Set", image: "wf-p3.jpg", price: "₹1899", description: "Traditional embroidered ethnic wear set.", rating: "4.8", stock: "Only 5 left" },
+                { id: 4, name: "Women's Formal Blazer - Black", image: "wf-p4.jpg", price: "₹2199", description: "Classic black blazer for professional look.", rating: "4.5", stock: "In Stock" },
+                { id: 5, name: "Women's Block Heel Sandals", image: "wf-p5.jpg", price: "₹1299", description: "Comfortable block heels for everyday wear.", rating: "4.3", stock: "In Stock" },
+                { id: 6, name: "Women's Printed A-Line Skirt", image: "wf-p6.jpg", price: "₹899", description: "Flowy A-line skirt with ethnic print.", rating: "4.4", stock: "In Stock" },
+                { id: 7, name: "Women's V-Neck Blouse", image: "wf-p7.jpg", price: "₹799", description: "Elegant V-neck blouse for formal occasions.", rating: "4.2", stock: "Low Stock" },
+                { id: 8, name: "Women's Embellished Clutch Bag", image: "wf-p8.jpg", price: "₹1099", description: "Stylish evening clutch with stone embellishments.", rating: "4.7", stock: "In Stock" },
+                { id: 9, name: "Women's Oversized Sunglasses", image: "wf-p9.jpg", price: "₹999", description: "Fashion forward UV protection sunglasses.", rating: "4.5", stock: "In Stock" },
+                { id: 10, name: "Women's Gold Plated Necklace Set", image: "wf-p10.jpg", price: "₹1599", description: "Elegant necklace with matching earrings.", rating: "4.8", stock: "Only 2 left" },
+                { id: 11, name: "Women's Workout Leggings", image: "wf-p11.jpg", price: "₹899", description: "High-waist compression leggings for fitness.", rating: "4.6", stock: "In Stock" },
+                { id: 12, name: "Women's Cotton Loungewear Set", image: "wf-p12.jpg", price: "₹1299", description: "Comfortable cotton set for home wear.", rating: "4.4", stock: "In Stock" },
+                { id: 13, name: "Women's Leather Crossbody Bag", image: "wf-p13.jpg", price: "₹1799", description: "Compact leather bag with adjustable strap.", rating: "4.7", stock: "In Stock" },
+                { id: 14, name: "Women's Digital Wrist Watch", image: "wf-p14.jpg", price: "₹1499", description: "Modern digital watch with multiple functions.", rating: "4.3", stock: "In Stock" },
+                { id: 15, name: "Women's Sequin Party Top", image: "wf-p15.jpg", price: "₹999", description: "Glamorous sequin top for evening events.", rating: "4.5", stock: "Limited Stock" }
+            ],
+            "kids-fashion": [
+    { id: 1, name: "Kids Cartoon Print T-shirt", image: "kf-p1.jpg", price: "₹399", description: "Soft cotton t-shirt with fun cartoon prints.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Girls Floral Print Dress", image: "kf-p2.jpg", price: "₹799", description: "Pretty floral pattern dress with puff sleeves.", rating: "4.6", stock: "In Stock" },
+    { id: 3, name: "Boys Denim Shorts", image: "kf-p3.jpg", price: "₹499", description: "Comfortable elastic waist denim shorts.", rating: "4.5", stock: "In Stock" },
+    { id: 4, name: "Kids Light-up Sneakers", image: "kf-p4.jpg", price: "₹899", description: "Fun sneakers with LED lights on soles.", rating: "4.8", stock: "Only 4 left" },
+    { id: 5, name: "Girls Unicorn Pajama Set", image: "kf-p5.jpg", price: "₹699", description: "Soft cotton pajamas with unicorn print.", rating: "4.7", stock: "In Stock" },
+    { id: 6, name: "Boys Superhero Costume Set", image: "kf-p6.jpg", price: "₹999", description: "Complete superhero costume with cape.", rating: "4.9", stock: "Limited Stock" },
+    { id: 7, name: "Kids Winter Hooded Jacket", image: "kf-p7.jpg", price: "₹1199", description: "Warm padded jacket with cute animal ears hood.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Girls Sparkly Ballet Flats", image: "kf-p8.jpg", price: "₹599", description: "Comfortable glitter shoes for special occasions.", rating: "4.4", stock: "In Stock" },
+    { id: 9, name: "Boys Graphic Print Hoodie", image: "kf-p9.jpg", price: "₹799", description: "Cozy hoodie with cool graphic print.", rating: "4.5", stock: "In Stock" },
+    { id: 10, name: "Kids Adjustable Sun Hat", image: "kf-p10.jpg", price: "₹349", description: "UV protection hat with chin strap.", rating: "4.3", stock: "In Stock" },
+    { id: 11, name: "Girls Leggings 2-Pack", image: "kf-p11.jpg", price: "₹549", description: "Comfortable stretch leggings in multiple colors.", rating: "4.7", stock: "In Stock" },
+    { id: 12, name: "Boys Formal Shirt and Bow Tie Set", image: "kf-p12.jpg", price: "₹899", description: "Smart occasion wear with detachable bow tie.", rating: "4.6", stock: "Only 2 left" },
+    { id: 13, name: "Kids Colorful Rain Boots", image: "kf-p13.jpg", price: "₹649", description: "Waterproof boots with easy-pull handles.", rating: "4.8", stock: "In Stock" },
+    { id: 14, name: "Girls Sequin Backpack", image: "kf-p14.jpg", price: "₹799", description: "Sparkly backpack with reversible sequins.", rating: "4.9", stock: "Low Stock" },
+    { id: 15, name: "Boys Sports Jersey Set", image: "kf-p15.jpg", price: "₹699", description: "Breathable jersey with shorts for active kids.", rating: "4.5", stock: "In Stock" }
+],
+            "footwear": [
+    { id: 1, name: "Men's Classic Leather Derby Shoes", image: "fw-p1.jpg", price: "₹2499", description: "Formal leather shoes with lace-up design.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Women's Block Heel Pumps", image: "fw-p2.jpg", price: "₹1799", description: "Comfortable office wear pumps with 2-inch heel.", rating: "4.5", stock: "In Stock" },
+    { id: 3, name: "Kids Velcro Canvas Sneakers", image: "fw-p3.jpg", price: "₹699", description: "Easy-wear sneakers with colorful design.", rating: "4.6", stock: "In Stock" },
+    { id: 4, name: "Men's Sports Running Shoes", image: "fw-p4.jpg", price: "₹1999", description: "Lightweight mesh running shoes with cushioned sole.", rating: "4.8", stock: "Low Stock" },
+    { id: 5, name: "Women's Embellished Flat Sandals", image: "fw-p5.jpg", price: "₹999", description: "Elegant sandals with stone embellishments.", rating: "4.4", stock: "In Stock" },
+    { id: 6, name: "Men's Leather Loafers", image: "fw-p6.jpg", price: "₹1899", description: "Slip-on formal shoes with tassels.", rating: "4.7", stock: "In Stock" },
+    { id: 7, name: "Women's Ankle Boots", image: "fw-p7.jpg", price: "₹2299", description: "Stylish faux leather boots with side zipper.", rating: "4.6", stock: "Only 3 left" },
+    { id: 8, name: "Unisex Flip Flops", image: "fw-p8.jpg", price: "₹399", description: "Comfortable rubber flip flops for casual wear.", rating: "4.3", stock: "In Stock" },
+    { id: 9, name: "Men's Hiking Boots", image: "fw-p9.jpg", price: "₹2799", description: "Waterproof boots with anti-slip tread.", rating: "4.9", stock: "In Stock" },
+    { id: 10, name: "Women's Canvas Slip-ons", image: "fw-p10.jpg", price: "₹799", description: "Casual printed canvas shoes for everyday wear.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Men's Formal Monk Strap Shoes", image: "fw-p11.jpg", price: "₹2599", description: "Elegant formal shoes with double buckle closure.", rating: "4.7", stock: "Limited Stock" },
+    { id: 12, name: "Women's High Heel Sandals", image: "fw-p13.jpg", price: "₹1599", description: "Strappy evening sandals with 3-inch heel.", rating: "4.5", stock: "In Stock" },
+    { id: 13, name: "Unisex Athletic Sports Sandals", image: "fw-p12.jpg", price: "₹1299", description: "Durable sandals with adjustable straps for outdoor activities.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "Women's Ballet Flats", image: "fw-p14.jpg", price: "₹899", description: "Classic comfortable flats for work or casual wear.", rating: "4.4", stock: "In Stock" },
+    { id: 15, name: "Men's Ethnic Mojari Shoes", image: "fw-p15.jpg", price: "₹1499", description: "Traditional handcrafted shoes for festive occasions.", rating: "4.8", stock: "Only 5 left" }
+],
+"smartphones": [
+    { id: 1, name: "Galaxy S25 Ultra 5G", image: "sp-p1.jpg", price: "₹109999", description: "6.8-inch Dynamic AMOLED, 200MP camera, 16GB RAM, 512GB storage.", rating: "4.9", stock: "In Stock" },
+    { id: 2, name: "iPhone 16 Pro", image: "sp-p2.jpg", price: "₹119999", description: "6.1-inch Super Retina XDR, A18 chip, 8GB RAM, 256GB storage.", rating: "4.8", stock: "Limited Stock" },
+    { id: 3, name: "Google Pixel 9", image: "sp-p3.jpg", price: "₹79999", description: "6.4-inch OLED, Google Tensor G4, 12GB RAM, advanced AI camera.", rating: "4.7", stock: "In Stock" },
+    { id: 4, name: "OnePlus 13", image: "sp-p4.jpg", price: "₹69999", description: "6.7-inch AMOLED, Snapdragon 8 Gen 3, 16GB RAM, 256GB storage.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Xiaomi 14 Pro", image: "xiaomi14pro.jpg", price: "₹54999", description: "6.6-inch AMOLED, Snapdragon 8 Gen 3, 12GB RAM, 256GB storage.", rating: "4.5", stock: "In Stock" },
+    { id: 6, name: "Realme GT 6 Pro", image: "realme-gt6.jpg", price: "₹44999", description: "6.7-inch Super AMOLED, 12GB RAM, 108MP camera system.", rating: "4.4", stock: "Only 4 left" },
+    { id: 7, name: "Nothing Phone (3)", image: "nothing3.jpg", price: "₹39999", description: "6.5-inch OLED with Glyph Interface 2.0, 8GB RAM, 128GB storage.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Vivo X100 Pro", image: "vivox100pro.jpg", price: "₹79999", description: "6.8-inch E6 AMOLED, Dimensity 9300, 12GB RAM, Zeiss optics.", rating: "4.7", stock: "In Stock" },
+    { id: 9, name: "Motorola Edge 50 Ultra", image: "moto-edge50.jpg", price: "₹49999", description: "6.7-inch POLED, Snapdragon 8s Gen 2, 12GB RAM, 256GB storage.", rating: "4.3", stock: "In Stock" },
+    { id: 10, name: "POCO F6 Pro", image: "pocof6pro.jpg", price: "₹34999", description: "6.67-inch AMOLED, Snapdragon 8 Gen 2, 8GB RAM, 256GB storage.", rating: "4.5", stock: "In Stock" },
+    { id: 11, name: "iPhone SE 4", image: "iphonese4.jpg", price: "₹49999", description: "6.1-inch LCD, A16 Bionic, 6GB RAM, 128GB storage.", rating: "4.4", stock: "In Stock" },
+    { id: 12, name: "Samsung Galaxy A55", image: "galaxya55.jpg", price: "₹29999", description: "6.5-inch Super AMOLED, Exynos 1480, 8GB RAM, 128GB storage.", rating: "4.3", stock: "In Stock" },
+    { id: 13, name: "Oppo Reno 12 Pro", image: "opporeno12.jpg", price: "₹39999", description: "6.7-inch AMOLED, Dimensity 8200, 8GB RAM, 256GB storage.", rating: "4.4", stock: "Low Stock" },
+    { id: 14, name: "iQOO Neo 9 Pro", image: "iqooneo9.jpg", price: "₹35999", description: "6.78-inch AMOLED, Snapdragon 8 Gen 2, 12GB RAM, 256GB storage.", rating: "4.6", stock: "In Stock" },
+    { id: 15, name: "Redmi Note 14 Pro", image: "redminote14.jpg", price: "₹24999", description: "6.67-inch AMOLED, Dimensity 7300, 8GB RAM, 128GB storage.", rating: "4.5", stock: "In Stock" }
+],
+
+// Laptops Collection
+"laptops": [
+    { id: 1, name: "MacBook Pro 16-inch (M4)", image: "macbookprom4.jpg", price: "₹249999", description: "16-inch Liquid Retina XDR, Apple M4 chip, 32GB RAM, 1TB SSD.", rating: "4.9", stock: "Limited Stock" },
+    { id: 2, name: "Dell XPS 15", image: "dellxps15.jpg", price: "₹169999", description: "15.6-inch 4K OLED, Intel Core i9, 32GB RAM, 1TB SSD, RTX 4070.", rating: "4.8", stock: "In Stock" },
+    { id: 3, name: "HP Spectre x360 14", image: "hpspectre.jpg", price: "₹139999", description: "14-inch OLED touchscreen, Intel Core Ultra 7, 16GB RAM, 1TB SSD.", rating: "4.7", stock: "In Stock" },
+    { id: 4, name: "Lenovo ThinkPad X1 Carbon Gen 12", image: "thinkpadx1.jpg", price: "₹149999", description: "14-inch 2.8K OLED, Intel Core Ultra 7, 32GB RAM, 1TB SSD.", rating: "4.8", stock: "In Stock" },
+    { id: 5, name: "Asus ROG Zephyrus G16", image: "asusrog.jpg", price: "₹179999", description: "16-inch QHD 240Hz, Intel Core i9, RTX 4080, 32GB RAM, 2TB SSD.", rating: "4.7", stock: "Only 2 left" },
+    { id: 6, name: "Microsoft Surface Laptop 7", image: "surfacelaptop7.jpg", price: "₹124999", description: "13.5-inch PixelSense, Intel Core Ultra 5, 16GB RAM, 512GB SSD.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "Acer Predator Helios 16", image: "predatorhelios.jpg", price: "₹159999", description: "16-inch QHD 165Hz, Intel Core i7, RTX 4070, 16GB RAM, 1TB SSD.", rating: "4.5", stock: "In Stock" },
+    { id: 8, name: "MacBook Air 15-inch (M3)", image: "macbookairm3.jpg", price: "₹129999", description: "15.3-inch Liquid Retina, Apple M3 chip, 16GB RAM, 512GB SSD.", rating: "4.8", stock: "In Stock" },
+    { id: 9, name: "Razer Blade 16", image: "razerblade16.jpg", price: "₹259999", description: "16-inch 4K 240Hz, Intel Core i9, RTX 4090, 32GB RAM, 2TB SSD.", rating: "4.9", stock: "Limited Stock" },
+    { id: 10, name: "MSI Creator Z17 HX", image: "msicreator.jpg", price: "₹229999", description: "17-inch QHD+ 165Hz, Intel Core i9, RTX 4070, 64GB RAM, 2TB SSD.", rating: "4.7", stock: "In Stock" },
+    { id: 11, name: "HP Omen 17", image: "hpomen.jpg", price: "₹149999", description: "17.3-inch QHD 240Hz, AMD Ryzen 9, RTX 4070, 32GB RAM, 1TB SSD.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Lenovo Yoga 9i Gen 9", image: "lenovoyoga.jpg", price: "₹129999", description: "14-inch 4K OLED touch, Intel Core Ultra 7, 16GB RAM, 1TB SSD.", rating: "4.7", stock: "In Stock" },
+    { id: 13, name: "Samsung Galaxy Book4 Ultra", image: "galaxybook4.jpg", price: "₹169999", description: "16-inch AMOLED, Intel Core Ultra 9, RTX 4070, 32GB RAM, 1TB SSD.", rating: "4.6", stock: "Low Stock" },
+    { id: 14, name: "Asus Zenbook S 14", image: "zenbooks14.jpg", price: "₹119999", description: "14-inch 3K OLED, Intel Core Ultra 7, 32GB RAM, 1TB SSD.", rating: "4.5", stock: "In Stock" },
+    { id: 15, name: "Alienware m18 R2", image: "alienware.jpg", price: "₹279999", description: "18-inch QHD+ 240Hz, Intel Core i9, RTX 4090, 64GB RAM, 4TB SSD.", rating: "4.9", stock: "Only 1 left" }
+],
+
+// Audio Collection
+"audio": [
+    { id: 1, name: "Sony WH-1000XM6", image: "sony-wh1000xm6.jpg", price: "₹34999", description: "Wireless noise-cancelling headphones with AI adaptive sound.", rating: "4.9", stock: "In Stock" },
+    { id: 2, name: "Apple AirPods Pro 3", image: "airpodspro3.jpg", price: "₹29999", description: "Active noise cancellation, spatial audio, sweat and water resistant.", rating: "4.8", stock: "In Stock" },
+    { id: 3, name: "Bose QuietComfort Ultra", image: "boseqc.jpg", price: "₹32999", description: "Premium noise-cancelling headphones with immersive audio.", rating: "4.7", stock: "Limited Stock" },
+    { id: 4, name: "Sennheiser Momentum 5 Wireless", image: "sennheiser-momentum.jpg", price: "₹29999", description: "Audiophile-grade wireless headphones with ANC.", rating: "4.8", stock: "In Stock" },
+    { id: 5, name: "JBL Flip 7", image: "jblflip7.jpg", price: "₹12999", description: "Waterproof portable Bluetooth speaker with enhanced bass.", rating: "4.6", stock: "In Stock" },
+    { id: 6, name: "Samsung Galaxy Buds3 Pro", image: "galaxybuds3.jpg", price: "₹17999", description: "True wireless earbuds with intelligent ANC and 360 audio.", rating: "4.5", stock: "In Stock" },
+    { id: 7, name: "Sonos Era 300", image: "sonos-era300.jpg", price: "₹42999", description: "Smart speaker with spatial audio and room-filling sound.", rating: "4.7", stock: "In Stock" },
+    { id: 8, name: "Nothing Ear (3)", image: "nothingear3.jpg", price: "₹14999", description: "Transparent design earbuds with advanced noise cancellation.", rating: "4.6", stock: "In Stock" },
+    { id: 9, name: "Marshall Stanmore III", image: "marshall-stanmore.jpg", price: "₹37999", description: "Vintage-styled Bluetooth speaker with powerful sound.", rating: "4.7", stock: "Low Stock" },
+    { id: 10, name: "Google Pixel Buds Pro 2", image: "pixelbudspro2.jpg", price: "₹19999", description: "Smart earbuds with active noise cancellation and spatial audio.", rating: "4.5", stock: "In Stock" },
+    { id: 11, name: "Bose SoundLink Revolve+ II", image: "bose-revolve.jpg", price: "₹26999", description: "360° portable Bluetooth speaker with deep bass.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Audio-Technica ATH-M70x", image: "audiotechnica.jpg", price: "₹24999", description: "Professional monitor headphones for studio use.", rating: "4.8", stock: "Only 3 left" },
+    { id: 13, name: "Sony SRS-XG500", image: "sony-srs.jpg", price: "₹29999", description: "Portable party speaker with powerful sound and lighting effects.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Jabra Elite 10", image: "jabra-elite.jpg", price: "₹19999", description: "True wireless earbuds with Dolby Atmos and advanced calling.", rating: "4.4", stock: "In Stock" },
+    { id: 15, name: "Ultimate Ears MEGABOOM 4", image: "ue-megaboom.jpg", price: "₹16999", description: "Rugged waterproof speaker with 360° sound and deep bass.", rating: "4.6", stock: "In Stock" }
+],
+"gaming": [
+    { id: 1, name: "PlayStation 5 Pro", image: "ps5pro.jpg", price: "₹59999", description: "8K gaming, ray tracing, ultra-high speed SSD, enhanced CPU/GPU.", rating: "4.9", stock: "Limited Stock" },
+    { id: 2, name: "Xbox Series X (2024 Edition)", image: "xboxseriesx2.jpg", price: "₹54999", description: "Enhanced GPU, 2TB SSD, 4K gaming at 120fps.", rating: "4.8", stock: "In Stock" },
+    { id: 3, name: "Nintendo Switch 2", image: "switch2.jpg", price: "₹34999", description: "Next-gen handheld console with enhanced graphics and battery life.", rating: "4.9", stock: "Low Stock" },
+    { id: 4, name: "Razer Basilisk V4 Pro", image: "razer-basilisk.jpg", price: "₹14999", description: "Wireless gaming mouse with 30K DPI optical sensor.", rating: "4.7", stock: "In Stock" },
+    { id: 5, name: "SteelSeries Arctis Nova Pro", image: "arctis-nova.jpg", price: "₹29999", description: "Wireless gaming headset with active noise cancellation.", rating: "4.8", stock: "In Stock" },
+    { id: 6, name: "Logitech G915 TKL", image: "logitech-g915.jpg", price: "₹19999", description: "Wireless mechanical gaming keyboard with RGB lighting.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "ASUS ROG Swift OLED 32", image: "rog-swift.jpg", price: "₹89999", description: "32-inch 4K OLED gaming monitor with 240Hz refresh rate.", rating: "4.8", stock: "Only 2 left" },
+    { id: 8, name: "Secretlab Titan Evo 2023", image: "secretlab-titan.jpg", price: "₹44999", description: "Premium gaming chair with 4D armrests and magnetic head pillow.", rating: "4.7", stock: "In Stock" },
+    { id: 9, name: "Valve Steam Deck OLED", image: "steam-deck-oled.jpg", price: "₹49999", description: "Handheld gaming PC with enhanced OLED display and battery life.", rating: "4.8", stock: "In Stock" },
+    { id: 10, name: "MSI GeForce RTX 5080", image: "rtx5080.jpg", price: "₹109999", description: "Next-gen GPU with ray tracing, DLSS 4.0, and AI acceleration.", rating: "4.9", stock: "Limited Stock" },
+    { id: 11, name: "HyperX Cloud Alpha 2", image: "hyperx-cloud.jpg", price: "₹12999", description: "Premium gaming headset with dual chamber drivers.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Corsair K100 RGB OLED", image: "corsair-k100.jpg", price: "₹24999", description: "Premium mechanical keyboard with OLED smart display.", rating: "4.7", stock: "In Stock" },
+    { id: 13, name: "SCUF Reflex Pro", image: "scuf-reflex.jpg", price: "₹29999", description: "Premium PS5 controller with remappable paddles and customizable thumbsticks.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Xbox Elite Controller Series 3", image: "xbox-elite3.jpg", price: "₹19999", description: "Premium wireless controller with adjustable tension thumbsticks.", rating: "4.7", stock: "Only 5 left" },
+    { id: 15, name: "Oculus Quest 3 Pro", image: "quest3pro.jpg", price: "₹69999", description: "Advanced VR headset with eye tracking and enhanced graphics.", rating: "4.8", stock: "In Stock" }
+],
+// Kitchen Appliances Collection
+"kitchen-appliances": [
+    { id: 1, name: "Instant Pot Duo Plus 9-in-1", image: "instant-pot.jpg", price: "₹12999", description: "Multi-functional pressure cooker with 9 cooking modes.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Philips Air Fryer XXL", image: "philips-airfryer.jpg", price: "₹14999", description: "Large capacity air fryer with fat reduction technology.", rating: "4.7", stock: "In Stock" },
+    { id: 3, name: "KitchenAid Artisan Stand Mixer", image: "kitchenaid.jpg", price: "₹39999", description: "Premium stand mixer with 10 speed settings and multiple attachments.", rating: "4.9", stock: "Limited Stock" },
+    { id: 4, name: "Vitamix Professional Series 750", image: "vitamix.jpg", price: "₹49999", description: "High-performance blender with pre-programmed settings.", rating: "4.8", stock: "In Stock" },
+    { id: 5, name: "Nespresso Vertuo Next", image: "nespresso.jpg", price: "₹16999", description: "Coffee maker with single-touch brewing and multiple cup sizes.", rating: "4.6", stock: "In Stock" },
+    { id: 6, name: "Samsung Family Hub Refrigerator", image: "samsung-fridge.jpg", price: "₹189999", description: "Smart refrigerator with touchscreen and food management system.", rating: "4.7", stock: "Only 2 left" },
+    { id: 7, name: "Bosch 800 Series Dishwasher", image: "bosch-dishwasher.jpg", price: "₹79999", description: "Ultra-quiet dishwasher with flexible third rack and smart features.", rating: "4.8", stock: "In Stock" },
+    { id: 8, name: "Zojirushi Rice Cooker & Warmer", image: "zojirushi.jpg", price: "₹19999", description: "Induction heating rice cooker with multiple cooking functions.", rating: "4.9", stock: "In Stock" },
+    { id: 9, name: "Breville Smart Oven Air Fryer Pro", image: "breville-oven.jpg", price: "₹29999", description: "Countertop oven with 13 cooking functions including air fry.", rating: "4.7", stock: "In Stock" },
+    { id: 10, name: "Ninja Foodi 11-in-1 SmartLid", image: "ninja-foodi.jpg", price: "₹24999", description: "Multi-cooker with pressure cooking, air frying and steaming.", rating: "4.6", stock: "Low Stock" },
+    { id: 11, name: "LG InstaView Door-in-Door Refrigerator", image: "lg-fridge.jpg", price: "₹169999", description: "Energy efficient refrigerator with knock-twice to see inside feature.", rating: "4.7", stock: "In Stock" },
+    { id: 12, name: "Cuisinart Elemental Food Processor", image: "cuisinart.jpg", price: "₹11999", description: "350-watt food processor with multiple blades and discs.", rating: "4.5", stock: "In Stock" },
+    { id: 13, name: "Dyson V15 Absolute Cordless Vacuum", image: "dyson-v15.jpg", price: "₹59999", description: "Powerful cordless vacuum with laser dust detection.", rating: "4.8", stock: "In Stock" },
+    { id: 14, name: "Crock-Pot 8-Quart Smart Slow Cooker", image: "crockpot.jpg", price: "₹8999", description: "WiFi-enabled slow cooker with smartphone control.", rating: "4.4", stock: "In Stock" },
+    { id: 15, name: "Whirlpool Smart Countertop Microwave", image: "whirlpool-microwave.jpg", price: "₹19999", description: "Voice-controlled microwave with scan-to-cook technology.", rating: "4.5", stock: "In Stock" }
+],
+
+// Furniture Collection
+"furniture": [
+    { id: 1, name: "Sectional L-Shape Sofa Set", image: "sectional-sofa.jpg", price: "₹89999", description: "Premium fabric L-shaped sofa with ottoman and cushions.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Queen Size Platform Bed Frame", image: "platform-bed.jpg", price: "₹39999", description: "Modern wooden platform bed with headboard and storage.", rating: "4.6", stock: "In Stock" },
+    { id: 3, name: "Ergonomic Office Chair", image: "office-chair.jpg", price: "₹24999", description: "Adjustable chair with lumbar support and breathable mesh.", rating: "4.8", stock: "In Stock" },
+    { id: 4, name: "Solid Wood 6-Seater Dining Table", image: "dining-table.jpg", price: "₹59999", description: "Handcrafted dining table with matching chairs.", rating: "4.7", stock: "Limited Stock" },
+    { id: 5, name: "Modular Bookshelf System", image: "bookshelf.jpg", price: "₹29999", description: "Customizable shelving system with adjustable components.", rating: "4.5", stock: "In Stock" },
+    { id: 6, name: "Glass Top Coffee Table", image: "coffee-table.jpg", price: "₹19999", description: "Modern coffee table with tempered glass top and metal frame.", rating: "4.4", stock: "In Stock" },
+    { id: 7, name: "King Size Memory Foam Mattress", image: "mattress.jpg", price: "₹44999", description: "Premium memory foam mattress with cooling technology.", rating: "4.9", stock: "In Stock" },
+    { id: 8, name: "Recliner Lounge Chair with Ottoman", image: "recliner.jpg", price: "₹34999", description: "Leather recliner with matching footrest and swivel base.", rating: "4.6", stock: "Only 3 left" },
+    { id: 9, name: "Solid Wood Wardrobe", image: "wardrobe.jpg", price: "₹69999", description: "Spacious 4-door wardrobe with mirror and drawers.", rating: "4.7", stock: "In Stock" },
+    { id: 10, name: "Adjustable Standing Desk", image: "standing-desk.jpg", price: "₹39999", description: "Electric height-adjustable desk with memory settings.", rating: "4.8", stock: "In Stock" },
+    { id: 11, name: "Kids Bunk Bed with Storage", image: "bunk-bed.jpg", price: "₹49999", description: "Space-saving bunk bed with built-in drawers and desk.", rating: "4.5", stock: "In Stock" },
+    { id: 12, name: "Accent Chair with Ottoman", image: "accent-chair.jpg", price: "₹24999", description: "Stylish upholstered chair with matching footstool.", rating: "4.4", stock: "In Stock" },
+    { id: 13, name: "TV Entertainment Unit", image: "tv-unit.jpg", price: "₹27999", description: "Wall-mounted TV cabinet with storage and display shelves.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "Shoe Cabinet with Seating", image: "shoe-cabinet.jpg", price: "₹15999", description: "Space-efficient shoe storage with built-in bench.", rating: "4.3", stock: "In Stock" },
+    { id: 15, name: "Convertible Sofa Bed", image: "sofa-bed.jpg", price: "₹42999", description: "Modern sofa that transforms into a queen-size bed.", rating: "4.5", stock: "Low Stock" }
+],
+
+// Home Decor Collection
+"home-decor": [
+    { id: 1, name: "Handwoven Moroccan Area Rug", image: "moroccan-rug.jpg", price: "₹12999", description: "Authentic design 5x8 feet rug with geometric patterns.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Set of 3 Framed Wall Art", image: "wall-art.jpg", price: "₹7999", description: "Modern abstract prints in black wooden frames.", rating: "4.5", stock: "In Stock" },
+    { id: 3, name: "Oversized Wall Clock", image: "wall-clock.jpg", price: "₹4999", description: "30-inch diameter metal clock with silent mechanism.", rating: "4.6", stock: "In Stock" },
+    { id: 4, name: "Decorative Table Lamp Set", image: "table-lamps.jpg", price: "₹8999", description: "Pair of ceramic lamps with fabric shades.", rating: "4.4", stock: "In Stock" },
+    { id: 5, name: "Macramé Wall Hanging", image: "macrame.jpg", price: "₹2999", description: "Handcrafted cotton wall art with wooden dowel.", rating: "4.3", stock: "In Stock" },
+    { id: 6, name: "Velvet Throw Pillows Set of 4", image: "throw-pillows.jpg", price: "₹3999", description: "Decorative accent pillows in complementary colors.", rating: "4.5", stock: "Limited Stock" },
+    { id: 7, name: "Brass Floor Planter Stand", image: "planter-stand.jpg", price: "₹5999", description: "Mid-century inspired planter with adjustable height.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Smart LED String Lights", image: "string-lights.jpg", price: "₹2499", description: "App-controlled fairy lights with multiple effects.", rating: "4.7", stock: "In Stock" },
+    { id: 9, name: "Decorative Mirror with Gold Frame", image: "decorative-mirror.jpg", price: "₹9999", description: "Ornate wall mirror with antique finish, 36x48 inches.", rating: "4.8", stock: "Only 2 left" },
+    { id: 10, name: "Ceramic Vase Collection", image: "ceramic-vases.jpg", price: "₹4999", description: "Set of 3 handcrafted vases in different sizes.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Himalayan Salt Lamp", image: "salt-lamp.jpg", price: "₹1999", description: "Natural crystal salt lamp with wooden base and dimmer.", rating: "4.5", stock: "In Stock" },
+    { id: 12, name: "Floating Wall Shelves Set", image: "wall-shelves.jpg", price: "₹3499", description: "Set of 3 wooden shelves in different lengths.", rating: "4.3", stock: "In Stock" },
+    { id: 13, name: "Scented Candle Gift Set", image: "candle-set.jpg", price: "₹2999", description: "Set of 4 premium soy wax candles with essential oils.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "Digital Photo Frame", image: "digital-frame.jpg", price: "₹7999", description: "10-inch frame with WiFi and cloud photo syncing.", rating: "4.5", stock: "In Stock" },
+    { id: 15, name: "Decorative Wooden Room Divider", image: "room-divider.jpg", price: "₹11999", description: "Carved wooden 4-panel screen with artistic design.", rating: "4.7", stock: "In Stock" }
+],
+
+// Bedding Collection
+"bedding": [
+    { id: 1, name: "Egyptian Cotton Sheet Set", image: "cotton-sheets.jpg", price: "₹8999", description: "1000 thread count sheets with 2 pillowcases, King size.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Down Alternative Comforter", image: "comforter.jpg", price: "₹7999", description: "All-season hypoallergenic duvet insert, Queen size.", rating: "4.7", stock: "In Stock" },
+    { id: 3, name: "Memory Foam Pillows Set of 2", image: "memory-pillows.jpg", price: "₹4999", description: "Cooling gel-infused pillows with removable covers.", rating: "4.9", stock: "Limited Stock" },
+    { id: 4, name: "Weighted Blanket", image: "weighted-blanket.jpg", price: "₹6999", description: "15 lbs therapeutic blanket with micro glass beads.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Duvet Cover Set with Shams", image: "duvet-set.jpg", price: "₹5999", description: "100% cotton printed duvet set, King size.", rating: "4.5", stock: "In Stock" },
+    { id: 6, name: "Luxury Mattress Topper", image: "mattress-topper.jpg", price: "₹9999", description: "3-inch gel memory foam topper, Queen size.", rating: "4.8", stock: "In Stock" },
+    { id: 7, name: "Electric Heated Blanket", image: "heated-blanket.jpg", price: "₹4999", description: "Dual-control heated throw with auto shut-off.", rating: "4.4", stock: "Only 4 left" },
+    { id: 8, name: "Bamboo Bed Sheet Set", image: "bamboo-sheets.jpg", price: "₹7499", description: "Cooling bamboo viscose sheets, 4-piece Queen set.", rating: "4.7", stock: "In Stock" },
+    { id: 9, name: "Adjustable Bed Wedge Pillow", image: "wedge-pillow.jpg", price: "₹3999", description: "Multi-position foam pillow for back and leg support.", rating: "4.6", stock: "In Stock" },
+    { id: 10, name: "Silk Pillowcase Set of 2", image: "silk-pillowcase.jpg", price: "₹4499", description: "100% mulberry silk pillowcases, Standard size.", rating: "4.8", stock: "In Stock" },
+    { id: 11, name: "Decorative Bed Runner", image: "bed-runner.jpg", price: "₹2999", description: "Quilted bed scarf with matching accent pillows.", rating: "4.3", stock: "In Stock" },
+    { id: 12, name: "Waterproof Mattress Protector", image: "mattress-protector.jpg", price: "₹3499", description: "Breathable and hypoallergenic cover, King size.", rating: "4.5", stock: "In Stock" },
+    { id: 13, name: "Kids Bedding Set with Comforter", image: "kids-bedding.jpg", price: "₹4999", description: "5-piece themed bedding set for twin beds.", rating: "4.6", stock: "Low Stock" },
+    { id: 14, name: "Organic Cotton Waffle Throw Blanket", image: "waffle-throw.jpg", price: "₹5499", description: "Textured waffle-weave blanket made from 100% organic cotton, perfect for layering.", rating: "4.5", stock: "In Stock" },
+{ id: 15, name: "Copper-Infused Pillow Protectors Set", image: "copper-protectors.jpg", price: "₹2999", description: "Antimicrobial pillow protectors with copper-infused fabric to inhibit bacteria growth.", rating: "4.7", stock: "New Arrival" }
+        ],
+        // Skincare Collection
+"skincare": [
+    { id: 1, name: "Hyaluronic Acid Serum", image: "hyaluronic-serum.jpg", price: "₹1499", description: "Hydrating serum with 2% hyaluronic acid for intense moisture.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Vitamin C Brightening Moisturizer", image: "vitamin-c.jpg", price: "₹1999", description: "Antioxidant-rich moisturizer with 15% vitamin C for radiant skin.", rating: "4.7", stock: "In Stock" },
+    { id: 3, name: "Retinol Night Cream", image: "retinol-cream.jpg", price: "₹2499", description: "Anti-aging night cream with 0.5% retinol and peptides.", rating: "4.9", stock: "Limited Stock" },
+    { id: 4, name: "Clay Purifying Mask", image: "clay-mask.jpg", price: "₹1299", description: "Deep cleansing mask with kaolin clay and activated charcoal.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Gentle Foaming Cleanser", image: "foaming-cleanser.jpg", price: "₹899", description: "pH-balanced cleanser suitable for sensitive skin.", rating: "4.5", stock: "In Stock" },
+    { id: 6, name: "AHA BHA Exfoliating Toner", image: "exfoliating-toner.jpg", price: "₹1699", description: "Chemical exfoliant with fruit acids for smoother skin.", rating: "4.7", stock: "In Stock" },
+    { id: 7, name: "Centella Repair Balm", image: "centella-balm.jpg", price: "₹1299", description: "Soothing repair balm with centella asiatica for damaged skin.", rating: "4.8", stock: "Only 3 left" },
+    { id: 8, name: "SPF 50 Invisible Sunscreen", image: "sunscreen.jpg", price: "₹1199", description: "Lightweight broad-spectrum protection with antioxidants.", rating: "4.9", stock: "In Stock" },
+    { id: 9, name: "Niacinamide Pore Minimizing Serum", image: "niacinamide.jpg", price: "₹1599", description: "10% niacinamide formula to reduce pore appearance.", rating: "4.7", stock: "In Stock" },
+    { id: 10, name: "Hydrating Sheet Mask Set", image: "sheet-masks.jpg", price: "₹999", description: "Pack of 5 hydrating masks with different botanical extracts.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Eye Contour Cream", image: "eye-cream.jpg", price: "₹1899", description: "Peptide-rich cream for dark circles and fine lines.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Snail Mucin Essence", image: "snail-essence.jpg", price: "₹1799", description: "Repairing essence with 96% snail secretion filtrate.", rating: "4.8", stock: "In Stock" },
+    { id: 13, name: "Rosehip Facial Oil", image: "rosehip-oil.jpg", price: "₹1399", description: "Cold-pressed rosehip oil rich in essential fatty acids.", rating: "4.5", stock: "Low Stock" },
+    { id: 14, name: "Salicylic Acid Spot Treatment", image: "spot-treatment.jpg", price: "₹899", description: "Targeted treatment with 2% salicylic acid for blemishes.", rating: "4.6", stock: "In Stock" },
+    { id: 15, name: "Ceramide Barrier Repair Cream", image: "ceramide-cream.jpg", price: "₹2199", description: "Rich moisturizer with ceramides to strengthen skin barrier.", rating: "4.7", stock: "In Stock" }
+],
+
+// Makeup Collection
+"makeup": [
+    { id: 1, name: "Long-Wear Foundation", image: "foundation.jpg", price: "₹2499", description: "24-hour foundation with 40 shades and matte finish.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Volumizing Mascara", image: "mascara.jpg", price: "₹1299", description: "Smudge-proof mascara for dramatic volume and length.", rating: "4.7", stock: "In Stock" },
+    { id: 3, name: "Matte Liquid Lipstick", image: "liquid-lipstick.jpg", price: "₹1199", description: "Long-lasting liquid lip color in 20 shades.", rating: "4.6", stock: "In Stock" },
+    { id: 4, name: "Eyeshadow Palette - Sunset Edition", image: "eyeshadow-palette.jpg", price: "₹2999", description: "18-shade palette with warm neutrals and vivid sunset tones.", rating: "4.9", stock: "Limited Stock" },
+    { id: 5, name: "Dewy Highlighter", image: "highlighter.jpg", price: "₹1599", description: "Cream highlighter for natural-looking glow.", rating: "4.7", stock: "In Stock" },
+    { id: 6, name: "Brow Defining Pencil", image: "brow-pencil.jpg", price: "₹999", description: "Dual-ended pencil with spoolie for naturally defined brows.", rating: "4.5", stock: "In Stock" },
+    { id: 7, name: "Blurring Primer", image: "primer.jpg", price: "₹1799", description: "Pore-minimizing primer with smoothing effect.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Cream Blush Duo", image: "cream-blush.jpg", price: "₹1399", description: "Buildable cream blush in complementary shades.", rating: "4.7", stock: "Only 5 left" },
+    { id: 9, name: "Setting Powder - Translucent", image: "setting-powder.jpg", price: "₹1899", description: "Finely-milled powder for mattifying and setting makeup.", rating: "4.8", stock: "In Stock" },
+    { id: 10, name: "Waterproof Gel Eyeliner", image: "gel-eyeliner.jpg", price: "₹1099", description: "Smudge-proof gel liner with intense color payoff.", rating: "4.6", stock: "In Stock" },
+    { id: 11, name: "Multi-Use Lip and Cheek Tint", image: "lip-cheek-tint.jpg", price: "₹1299", description: "Versatile tint for natural flush on lips and cheeks.", rating: "4.5", stock: "In Stock" },
+    { id: 12, name: "Makeup Setting Spray", image: "setting-spray.jpg", price: "₹1499", description: "Long-lasting fine mist to lock in makeup for 16 hours.", rating: "4.7", stock: "In Stock" },
+    { id: 13, name: "Cushion Foundation Compact", image: "cushion-foundation.jpg", price: "₹2199", description: "Hydrating cushion foundation with buildable coverage and SPF.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "Contour and Bronzer Palette", image: "contour-palette.jpg", price: "₹1999", description: "6-shade palette for sculpting and warming the complexion.", rating: "4.5", stock: "Low Stock" },
+    { id: 15, name: "Precision Liquid Eyeliner", image: "liquid-eyeliner.jpg", price: "₹999", description: "Ultra-fine tip liner for precise application.", rating: "4.8", stock: "In Stock" }
+],
+
+// Haircare Collection
+"haircare": [
+    { id: 1, name: "Hydrating Shampoo", image: "hydrating-shampoo.jpg", price: "₹999", description: "Moisturizing shampoo for dry and damaged hair.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Keratin Hair Mask", image: "keratin-mask.jpg", price: "₹1499", description: "Deep conditioning treatment with keratin protein.", rating: "4.8", stock: "In Stock" },
+    { id: 3, name: "Argan Oil Hair Serum", image: "argan-serum.jpg", price: "₹1299", description: "Frizz-control serum with pure argan oil for shine.", rating: "4.6", stock: "In Stock" },
+    { id: 4, name: "Volumizing Dry Shampoo", image: "dry-shampoo.jpg", price: "₹899", description: "Invisible dry shampoo that adds volume and freshness.", rating: "4.5", stock: "In Stock" },
+    { id: 5, name: "Heat Protectant Spray", image: "heat-protectant.jpg", price: "₹1099", description: "Thermal protection up to 450°F with UV filters.", rating: "4.7", stock: "Limited Stock" },
+    { id: 6, name: "Scalp Exfoliating Scrub", image: "scalp-scrub.jpg", price: "₹1199", description: "Detoxifying scrub to remove buildup and flakes.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "Curl Defining Cream", image: "curl-cream.jpg", price: "₹1299", description: "Lightweight cream for bouncy, frizz-free curls.", rating: "4.8", stock: "In Stock" },
+    { id: 8, name: "Protein Bond Repair Treatment", image: "bond-repair.jpg", price: "₹1999", description: "Professional-grade treatment to repair broken bonds.", rating: "4.9", stock: "Only 2 left" },
+    { id: 9, name: "Silk Scrunchie Set", image: "silk-scrunchies.jpg", price: "₹799", description: "Set of 5 pure silk scrunchies to prevent hair damage.", rating: "4.5", stock: "In Stock" },
+    { id: 10, name: "Wide Tooth Detangling Comb", image: "detangling-comb.jpg", price: "₹699", description: "Gentle comb for wet hair to minimize breakage.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Color Protection Conditioner", image: "color-conditioner.jpg", price: "₹1199", description: "Sulfate-free conditioner to preserve hair color vibrancy.", rating: "4.6", stock: "In Stock" },
+    { id: 12, name: "Biotin Hair Growth Serum", image: "biotin-serum.jpg", price: "₹1699", description: "Stimulating serum with biotin and peptides for hair growth.", rating: "4.7", stock: "In Stock" },
+    { id: 13, name: "Moisturizing Leave-In Conditioner", image: "leave-in.jpg", price: "₹999", description: "Lightweight moisturizer for all hair types.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Ceramic Ionic Hair Dryer", image: "hair-dryer.jpg", price: "₹4999", description: "Professional-grade dryer with multiple heat settings.", rating: "4.8", stock: "Low Stock" },
+    { id: 15, name: "Texturizing Hair Spray", image: "texturizing-spray.jpg", price: "₹899", description: "Medium-hold spray for volume and texture.", rating: "4.5", stock: "In Stock" }
+],
+"fragrance":[
+{ id: 1, name: "Chanel N°5 Eau de Parfum", image: "chanel-no5.jpg", price: "₹8,799", description: "Iconic floral aldehyde fragrance with notes of rose, jasmine, and vanilla.", rating: "4.8", stock: "In Stock" },
+{ id: 2, name: "Dior Sauvage Eau de Toilette", image: "dior-sauvage.jpg", price: "₹7,299", description: "Fresh and bold masculine fragrance with bergamot, pepper, and amberwood notes.", rating: "4.7", stock: "In Stock" },
+{ id: 3, name: "Jo Malone London English Pear & Freesia Cologne", image: "jo-malone-pear.jpg", price: "₹6,499", description: "Delicate and fruity scent combining the crisp freshness of pear with white freesia.", rating: "4.6", stock: "In Stock" },
+{ id: 4, name: "Tom Ford Black Orchid Eau de Parfum", image: "tom-ford-black-orchid.jpg", price: "₹9,999", description: "Luxurious and sensual fragrance with black truffle, ylang-ylang, and orchid notes.", rating: "4.9", stock: "Limited Stock" },
+{ id: 5, name: "Yves Saint Laurent Libre Eau de Parfum", image: "ysl-libre.jpg", price: "₹6,999", description: "Modern floral fragrance with lavender, orange blossom, and musk notes.", rating: "4.7", stock: "In Stock" },
+{ id: 6, name: "Bvlgari Man Wood Essence Eau de Parfum", image: "bvlgari-wood.jpg", price: "₹5,999", description: "Woody aromatic fragrance with notes of coriander, cypress, and vetiver.", rating: "4.5", stock: "In Stock" },
+{ id: 7, name: "Versace Eros Eau de Toilette", image: "versace-eros.jpg", price: "₹5,499", description: "Intense masculine fragrance with mint, green apple, and vanilla notes.", rating: "4.6", stock: "In Stock" },
+{ id: 8, name: "Gucci Bloom Eau de Parfum", image: "gucci-bloom.jpg", price: "₹7,899", description: "Rich floral fragrance featuring tuberose, jasmine, and Rangoon creeper.", rating: "4.7", stock: "In Stock" },
+{ id: 9, name: "Creed Aventus Eau de Parfum", image: "creed-aventus.jpg", price: "₹16,999", description: "Luxurious fruity-chypre fragrance with notes of pineapple, birch, and ambergris.", rating: "4.9", stock: "Limited Stock" },
+{ id: 10, name: "Hermès Terre d'Hermès Eau de Toilette", image: "hermes-terre.jpg", price: "₹6,999", description: "Mineral and woody fragrance with grapefruit, pepper, and vetiver notes.", rating: "4.8", stock: "In Stock" },
+{ id: 11, name: "Dolce & Gabbana Light Blue Eau de Toilette", image: "dg-light-blue.jpg", price: "₹5,299", description: "Fresh citrus fragrance with apple, sicilian lemon, and cedarwood notes.", rating: "4.6", stock: "In Stock" },
+{ id: 12, name: "Viktor & Rolf Flowerbomb Eau de Parfum", image: "flowerbomb.jpg", price: "₹8,499", description: "Explosive floral fragrance with jasmine, rose, and patchouli notes.", rating: "4.7", stock: "In Stock" },
+{ id: 13, name: "Maison Francis Kurkdjian Baccarat Rouge 540 Eau de Parfum", image: "baccarat-rouge.jpg", price: "₹17,999", description: "Luxurious amber floral fragrance with jasmine, saffron, and cedar notes.", rating: "4.9", stock: "Limited Stock" },
+{ id: 14, name: "Byredo Gypsy Water Eau de Parfum", image: "byredo-gypsy.jpg", price: "₹14,999", description: "Woody aromatic fragrance with notes of pine needle, sandalwood, and vanilla.", rating: "4.8", stock: "In Stock" },
+{ id: 15, name: "Maison Margiela Replica Jazz Club Eau de Toilette", image: "jazz-club.jpg", price: "₹8,999", description: "Warm and spicy fragrance with notes of pink pepper, rum, and tobacco leaf.", rating: "4.7", stock: "In Stock" }
+],
+"fitness":[
+{ id: 1, name: "Smart Fitness Tracker Watch", image: "fitness-tracker.jpg", price: "₹3,499", description: "Waterproof fitness tracker with heart rate monitor, step counter, and sleep analysis.", rating: "4.7", stock: "In Stock" },
+{ id: 2, name: "Adjustable Dumbbell Set", image: "dumbbell-set.jpg", price: "₹7,999", description: "Space-saving adjustable dumbbells with weights from 2.5kg to 24kg each.", rating: "4.8", stock: "In Stock" },
+{ id: 3, name: "Yoga Mat Premium", image: "yoga-mat.jpg", price: "₹1,499", description: "Extra thick 6mm non-slip yoga mat with alignment markings and carrying strap.", rating: "4.6", stock: "In Stock" },
+{ id: 4, name: "Resistance Bands Set", image: "resistance-bands.jpg", price: "₹899", description: "Set of 5 resistance bands with different tension levels for strength training.", rating: "4.5", stock: "In Stock" },
+{ id: 5, name: "Foam Roller for Muscle Recovery", image: "foam-roller.jpg", price: "₹999", description: "High-density foam roller for muscle recovery and deep tissue massage.", rating: "4.6", stock: "In Stock" },
+{ id: 6, name: "Smart Body Fat Scale", image: "smart-scale.jpg", price: "₹2,199", description: "Bluetooth body composition analyzer measuring weight, BMI, muscle mass, and more.", rating: "4.7", stock: "In Stock" },
+{ id: 7, name: "Weighted Jump Rope", image: "jump-rope.jpg", price: "₹799", description: "Adjustable weighted jump rope with ball bearings for smooth rotation.", rating: "4.5", stock: "In Stock" },
+{ id: 8, name: "Ab Roller Wheel", image: "ab-roller.jpg", price: "₹599", description: "Core strength trainer with knee pad for abdominal and arm workouts.", rating: "4.4", stock: "In Stock" },
+{ id: 9, name: "Kettlebell Cast Iron", image: "kettlebell.jpg", price: "₹1,899", description: "Cast iron kettlebell with vinyl coating for floor protection, available in multiple weights.", rating: "4.8", stock: "In Stock" },
+{ id: 10, name: "Pull-Up Bar Doorway", image: "pullup-bar.jpg", price: "₹1,299", description: "Multi-grip doorway pull-up bar supporting up to 150kg.", rating: "4.6", stock: "In Stock" },
+{ id: 11, name: "Pilates Reformer Ring", image: "pilates-ring.jpg", price: "₹799", description: "Dual-handled resistance ring for Pilates and isometric exercises.", rating: "4.4", stock: "In Stock" },
+{ id: 12, name: "Balance Ball Chair", image: "balance-ball-chair.jpg", price: "₹3,499", description: "Ergonomic chair with exercise ball for improved posture and core strength.", rating: "4.5", stock: "Limited Stock" },
+{ id: 13, name: "Suspension Training System", image: "suspension-trainer.jpg", price: "₹2,999", description: "Body weight resistance training system with anchoring door strap.", rating: "4.8", stock: "In Stock" },
+{ id: 14, name: "Push-Up Stands", image: "pushup-stands.jpg", price: "₹699", description: "Ergonomic push-up handles for reduced wrist strain and deeper range of motion.", rating: "4.3", stock: "In Stock" },
+{ id: 15, name: "Massage Gun Deep Tissue", image: "massage-gun.jpg", price: "₹4,999", description: "Percussion massage device with 5 attachments and 5 speed settings for muscle recovery.", rating: "4.9", stock: "In Stock" }
+],
+"outdoor-gear":[
+{ id: 1, name: "Ultralight Backpacking Tent", image: "backpacking-tent.jpg", price: "₹9,999", description: "Two-person waterproof tent weighing only 1.3kg, perfect for trekking and hiking.", rating: "4.8", stock: "In Stock" },
+{ id: 2, name: "Hydration Backpack", image: "hydration-pack.jpg", price: "₹2,499", description: "Lightweight 15L backpack with 2L water reservoir and multiple storage compartments.", rating: "4.7", stock: "In Stock" },
+{ id: 3, name: "Solar Power Bank", image: "solar-powerbank.jpg", price: "₹1,999", description: "20000mAh solar charging power bank with dual USB ports for outdoor adventures.", rating: "4.5", stock: "In Stock" },
+{ id: 4, name: "Portable Camping Stove", image: "camping-stove.jpg", price: "₹1,599", description: "Compact butane stove with piezo ignition and wind protection panels.", rating: "4.6", stock: "In Stock" },
+{ id: 5, name: "All-Weather Sleeping Bag", image: "sleeping-bag.jpg", price: "₹3,499", description: "Mummy-style sleeping bag rated for -10°C with water-resistant outer shell.", rating: "4.8", stock: "In Stock" },
+{ id: 6, name: "LED Headlamp", image: "headlamp.jpg", price: "₹899", description: "Rechargeable headlamp with 300 lumens brightness and adjustable beam angle.", rating: "4.6", stock: "In Stock" },
+{ id: 7, name: "Trekking Poles Pair", image: "trekking-poles.jpg", price: "₹1,799", description: "Adjustable aluminum trekking poles with cork grips and snow baskets.", rating: "4.7", stock: "In Stock" },
+{ id: 8, name: "Camping Hammock", image: "camping-hammock.jpg", price: "₹1,299", description: "Lightweight parachute nylon hammock with tree straps and carabiners.", rating: "4.5", stock: "In Stock" },
+{ id: 9, name: "Portable Water Filter", image: "water-filter.jpg", price: "₹2,299", description: "Compact water filter removing 99.9% of bacteria and parasites, filters up to 1000L.", rating: "4.9", stock: "In Stock" },
+{ id: 10, name: "Outdoor Survival Kit", image: "survival-kit.jpg", price: "₹1,499", description: "Comprehensive survival kit with first aid supplies, fire starter, and multi-tool.", rating: "4.7", stock: "In Stock" },
+{ id: 11, name: "Insulated Camping Mug", image: "camping-mug.jpg", price: "₹799", description: "Double-wall vacuum insulated stainless steel mug with lid, keeps drinks hot for 6 hours.", rating: "4.6", stock: "In Stock" },
+{ id: 12, name: "Folding Camp Chair", image: "camp-chair.jpg", price: "₹1,999", description: "Lightweight portable chair with cup holder and storage pocket, supports up to 120kg.", rating: "4.5", stock: "In Stock" },
+{ id: 13, name: "Inflatable Sleeping Pad", image: "sleeping-pad.jpg", price: "₹2,499", description: "Ultralight inflatable sleeping pad with R-value of 4.2 for four-season camping.", rating: "4.8", stock: "Limited Stock" },
+{ id: 14, name: "Waterproof Dry Bag Set", image: "dry-bags.jpg", price: "₹999", description: "Set of 3 waterproof dry bags (5L, 10L, 20L) for keeping gear dry during outdoor activities.", rating: "4.7", stock: "In Stock" },
+{ id: 15, name: "Multi-Tool Pocket Knife", image: "multi-tool.jpg", price: "₹1,699", description: "Stainless steel multi-tool with 14 functions including pliers, knife, and screwdrivers.", rating: "4.8", stock: "In Stock" }
+],
+"sports-equipment":[
+{ id: 1, name: "Premium Badminton Racket", image: "badminton-racket.jpg", price: "₹2,999", description: "Lightweight carbon fiber badminton racket with string tension up to 30lbs.", rating: "4.7", stock: "In Stock" },
+{ id: 2, name: "Cricket Bat English Willow", image: "cricket-bat.jpg", price: "₹6,999", description: "Grade 1 English willow cricket bat with protective toe guard and premium grip.", rating: "4.8", stock: "In Stock" },
+{ id: 3, name: "Football Size 5", image: "football.jpg", price: "₹1,299", description: "Match-quality football with water-resistant synthetic leather cover.", rating: "4.6", stock: "In Stock" },
+{ id: 4, name: "Basketball Indoor/Outdoor", image: "basketball.jpg", price: "₹999", description: "Composite leather basketball suitable for both indoor and outdoor courts.", rating: "4.5", stock: "In Stock" },
+{ id: 5, name: "Table Tennis Paddle Set", image: "tt-paddle-set.jpg", price: "₹1,499", description: "Set of 2 professional paddles with 3 balls and carrying case.", rating: "4.6", stock: "In Stock" },
+{ id: 6, name: "Tennis Racket Pro", image: "tennis-racket.jpg", price: "₹4,999", description: "Graphite-composite tennis racket with vibration dampening technology.", rating: "4.7", stock: "In Stock" },
+{ id: 7, name: "Golf Putter", image: "golf-putter.jpg", price: "₹3,499", description: "Mallet-style putter with alignment guide and soft face insert.", rating: "4.5", stock: "In Stock" },
+{ id: 8, name: "Volleyball Indoor", image: "volleyball.jpg", price: "₹899", description: "Soft-touch volleyball with 18-panel design for accurate flight.", rating: "4.4", stock: "In Stock" },
+{ id: 9, name: "Hockey Stick Composite", image: "hockey-stick.jpg", price: "₹1,899", description: "Carbon-fiberglass composite field hockey stick with cushioned grip.", rating: "4.6", stock: "In Stock" },
+{ id: 10, name: "Boxing Gloves 12oz", image: "boxing-gloves.jpg", price: "₹1,699", description: "Genuine leather boxing gloves with multi-layered foam padding and wrist support.", rating: "4.7", stock: "In Stock" },
+{ id: 11, name: "Squash Racket", image: "squash-racket.jpg", price: "₹2,299", description: "Teardrop-shaped squash racket with vibration dampening system.", rating: "4.5", stock: "In Stock" },
+{ id: 12, name: "Carrom Board Tournament", image: "carrom-board.jpg", price: "₹2,999", description: "Full-size tournament carrom board with coins, striker, and powder.", rating: "4.8", stock: "Limited Stock" },
+{ id: 13, name: "Dartboard Professional", image: "dartboard.jpg", price: "₹1,999", description: "Self-healing sisal fiber dartboard with mounting hardware and 6 steel tip darts.", rating: "4.6", stock: "In Stock" },
+{ id: 14, name: "Skipping Rope Professional", image: "skipping-rope.jpg", price: "₹699", description: "Adjustable speed rope with ball bearing handles for smooth rotation.", rating: "4.5", stock: "In Stock" },
+{ id: 15, name: "Yoga Block Set", image: "yoga-blocks.jpg", price: "₹799", description: "Set of 2 high-density EVA foam yoga blocks for support and stability in poses.", rating: "4.7", stock: "In Stock" }
+],
+"sportswear":[
+{ id: 1, name: "Men's Compression T-shirt", image: "compression-tshirt.jpg", price: "₹1,299", description: "Quick-dry compression t-shirt with four-way stretch and anti-odor technology.", rating: "4.6", stock: "In Stock" },
+{ id: 2, name: "Women's Running Leggings", image: "running-leggings.jpg", price: "₹1,799", description: "High-waisted running leggings with side pockets and reflective details.", rating: "4.8", stock: "In Stock" },
+{ id: 3, name: "Men's Training Shorts", image: "training-shorts.jpg", price: "₹999", description: "Lightweight training shorts with built-in liner and zippered pocket.", rating: "4.7", stock: "In Stock" },
+{ id: 4, name: "Women's Sports Bra Medium Support", image: "sports-bra.jpg", price: "₹1,499", description: "Medium support racerback sports bra with moisture-wicking fabric.", rating: "4.7", stock: "In Stock" },
+{ id: 5, name: "Unisex Running Jacket", image: "running-jacket.jpg", price: "₹2,499", description: "Waterproof running jacket with reflective elements and packable hood.", rating: "4.6", stock: "In Stock" },
+{ id: 6, name: "Men's Gym Tank Top", image: "gym-tank.jpg", price: "₹799", description: "Sleeveless gym tank with dropped armholes and moisture management.", rating: "4.5", stock: "In Stock" },
+{ id: 7, name: "Women's Tennis Skirt", image: "tennis-skirt.jpg", price: "₹1,299", description: "Pleated tennis skirt with built-in shorts and ball pocket.", rating: "4.7", stock: "In Stock" },
+{ id: 8, name: "Men's Track Pants", image: "track-pants.jpg", price: "₹1,499", description: "Tapered track pants with zip pockets and ankle zippers.", rating: "4.6", stock: "In Stock" },
+{ id: 9, name: "Women's Yoga Top", image: "yoga-top.jpg", price: "₹899", description: "Lightweight yoga top with built-in shelf bra and cross-back design.", rating: "4.6", stock: "In Stock" },
+{ id: 10, name: "Unisex Swimming Goggles", image: "swimming-goggles.jpg", price: "₹699", description: "Anti-fog swimming goggles with UV protection and adjustable strap.", rating: "4.5", stock: "In Stock" },
+{ id: 11, name: "Men's Football Jerseys", image: "football-jersey.jpg", price: "₹999", description: "Quick-dry polyester football jersey with ventilation panels.", rating: "4.4", stock: "In Stock" },
+{ id: 12, name: "Men's Seamless Workout Henley", image: "seamless-henley.jpg", price: "₹1,499", description: "Stretchy seamless henley with targeted ventilation and thumbhole sleeves.", rating: "4.6", stock: "In Stock" },
+{ id: 13, name: "Women's Crossover Sports Bralette", image: "crossover-bralette.jpg", price: "₹1,299", description: "Stylish crossover bralette with light support and moisture-wicking fabric.", rating: "4.7", stock: "In Stock" },
+{ id: 14, name: "Unisex Performance Hoodie", image: "performance-hoodie.jpg", price: "₹2,199", description: "Lightweight performance hoodie with temperature regulation and thumbholes.", rating: "4.8", stock: "In Stock" },
+{ id: 15, name: "Women's 2-in-1 Running Shorts", image: "2in1-shorts.jpg", price: "₹1,399", description: "Dual-layer running shorts with compression liner and quick-dry outer layer.", rating: "4.9", stock: "In Stock" }
+],
+"kids-toys": [
+    { id: 1, name: "Remote Control Car", image: "rc-car.jpg", price: "₹799", description: "High-speed RC car with rechargeable battery.", rating: "4.6", stock: "In Stock" },
+    { id: 2, name: "Plastic Building Blocks Set", image: "blocks.jpg", price: "₹499", description: "120-piece colorful building blocks for kids.", rating: "4.7", stock: "Only 5 left" },
+    { id: 3, name: "Stuffed Teddy Bear", image: "teddy.jpg", price: "₹299", description: "Soft and cuddly teddy bear for kids.", rating: "4.5", stock: "In Stock" },
+    { id: 4, name: "Musical Piano Toy", image: "piano.jpg", price: "₹599", description: "Mini piano with lights and sounds.", rating: "4.4", stock: "In Stock" },
+    { id: 5, name: "Dinosaur Action Figure Set", image: "dino.jpg", price: "₹349", description: "Set of 5 realistic dinosaur figures.", rating: "4.3", stock: "Only 2 left" },
+    { id: 6, name: "Toy Doctor Kit", image: "doctor-kit.jpg", price: "₹449", description: "Complete pretend play doctor set.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "Barbie Doll Set", image: "barbie.jpg", price: "₹699", description: "Barbie doll with accessories.", rating: "4.5", stock: "In Stock" },
+    { id: 8, name: "Toy Kitchen Set", image: "kitchen.jpg", price: "₹999", description: "Mini kitchen with utensils and pretend food.", rating: "4.7", stock: "Only 3 left" },
+    { id: 9, name: "Bubble Machine", image: "bubble.jpg", price: "₹399", description: "Automatic bubble blower for kids.", rating: "4.4", stock: "In Stock" },
+    { id: 10, name: "LEGO City Set", image: "lego.jpg", price: "₹1299", description: "Build your own city with LEGO bricks.", rating: "4.8", stock: "In Stock" },
+    { id: 11, name: "Toy Train Set", image: "train.jpg", price: "₹899", description: "Electric train set with tracks.", rating: "4.6", stock: "Only 4 left" },
+    { id: 12, name: "Water Gun", image: "water-gun.jpg", price: "₹199", description: "High-capacity water gun for outdoor fun.", rating: "4.3", stock: "In Stock" },
+    { id: 13, name: "Plastic Bowling Set", image: "bowling.jpg", price: "₹499", description: "10-pin bowling set for kids.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Toy Guitar", image: "guitar.jpg", price: "₹599", description: "Mini guitar with lights and sounds.", rating: "4.4", stock: "Only 1 left" },
+    { id: 15, name: "Animal Figurines Set", image: "animals.jpg", price: "₹299", description: "Set of 12 realistic animal figures.", rating: "4.2", stock: "In Stock" }
+],
+"board-games": [
+    { id: 1, name: "Monopoly Classic", image: "monopoly.jpg", price: "₹1499", description: "Classic property trading board game.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Scrabble", image: "scrabble.jpg", price: "₹999", description: "Word-building board game for all ages.", rating: "4.6", stock: "Only 2 left" },
+    { id: 3, name: "Chess Set", image: "chess.jpg", price: "₹499", description: "Wooden chess set with storage.", rating: "4.5", stock: "In Stock" },
+    { id: 4, name: "Ludo Board Game", image: "ludo.jpg", price: "₹299", description: "Classic Ludo game for family fun.", rating: "4.4", stock: "In Stock" },
+    { id: 5, name: "Catan Board Game", image: "catan.jpg", price: "₹1999", description: "Strategy-based resource management game.", rating: "4.8", stock: "Only 3 left" },
+    { id: 6, name: "Jenga Tower Game", image: "jenga.jpg", price: "₹599", description: "Stacking and balancing wooden blocks.", rating: "4.6", stock: "In Stock" },
+    { id: 7, name: "Risk Board Game", image: "risk.jpg", price: "₹1299", description: "World domination strategy game.", rating: "4.7", stock: "In Stock" },
+    { id: 8, name: "Clue Mystery Game", image: "clue.jpg", price: "₹899", description: "Solve the mystery in this classic game.", rating: "4.5", stock: "Only 1 left" },
+    { id: 9, name: "Pictionary", image: "pictionary.jpg", price: "₹699", description: "Drawing and guessing board game.", rating: "4.4", stock: "In Stock" },
+    { id: 10, name: "Sequence Board Game", image: "sequence.jpg", price: "₹799", description: "Strategy and card-based board game.", rating: "4.6", stock: "In Stock" },
+    { id: 11, name: "Uno Card Game", image: "uno.jpg", price: "₹199", description: "Fast-paced family card game.", rating: "4.5", stock: "Only 4 left" },
+    { id: 12, name: "Ticket to Ride", image: "ticket.jpg", price: "₹1799", description: "Train adventure strategy game.", rating: "4.8", stock: "In Stock" },
+    { id: 13, name: "Codenames", image: "codenames.jpg", price: "₹899", description: "Word-based spy game.", rating: "4.7", stock: "In Stock" },
+    { id: 14, name: "Exploding Kittens", image: "kittens.jpg", price: "₹499", description: "Hilarious card game for all ages.", rating: "4.6", stock: "Only 2 left" },
+    { id: 15, name: "Cards Against Humanity", image: "cah.jpg", price: "₹999", description: "Adult party game for outrageous fun.", rating: "4.5", stock: "In Stock" }
+],
+"puzzles": [
+    { id: 1, name: "1000-Piece Jigsaw Puzzle", image: "jigsaw.jpg", price: "₹499", description: "Landscape-themed jigsaw puzzle.", rating: "4.6", stock: "In Stock" },
+    { id: 2, name: "3D Wooden Puzzle", image: "wooden.jpg", price: "₹699", description: "3D wooden puzzle of the Eiffel Tower.", rating: "4.7", stock: "Only 3 left" },
+    { id: 3, name: "500-Piece Animal Puzzle", image: "animal.jpg", price: "₹299", description: "Colorful animal-themed puzzle.", rating: "4.5", stock: "In Stock" },
+    { id: 4, name: "Ravensburger Puzzle", image: "ravensburger.jpg", price: "₹899", description: "High-quality 1000-piece puzzle.", rating: "4.8", stock: "In Stock" },
+    { id: 5, name: "Glow-in-the-Dark Puzzle", image: "glow.jpg", price: "₹599", description: "Space-themed glow-in-the-dark puzzle.", rating: "4.4", stock: "Only 2 left" },
+    { id: 6, name: "Kids Cartoon Puzzle", image: "cartoon.jpg", price: "₹199", description: "24-piece puzzle for kids.", rating: "4.3", stock: "In Stock" },
+    { id: 7, name: "World Map Puzzle", image: "map.jpg", price: "₹499", description: "Educational world map puzzle.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Mystery Puzzle Box", image: "mystery.jpg", price: "₹799", description: "Solve the mystery with this puzzle box.", rating: "4.7", stock: "Only 1 left" },
+    { id: 9, name: "3D Crystal Puzzle", image: "crystal.jpg", price: "₹399", description: "Crystal-shaped 3D puzzle.", rating: "4.5", stock: "In Stock" },
+    { id: 10, name: "Harry Potter Puzzle", image: "harry.jpg", price: "₹699", description: "Harry Potter-themed 500-piece puzzle.", rating: "4.6", stock: "In Stock" },
+    { id: 11, name: "Puzzle Ball", image: "ball.jpg", price: "₹299", description: "Spherical puzzle for a unique challenge.", rating: "4.4", stock: "Only 4 left" },
+    { id: 12, name: "Custom Photo Puzzle", image: "photo.jpg", price: "₹999", description: "Create a puzzle from your own photo.", rating: "4.8", stock: "In Stock" },
+    { id: 13, name: "Double-Sided Puzzle", image: "double.jpg", price: "₹599", description: "Two puzzles in one with double-sided pieces.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Magnetic Travel Puzzle", image: "magnetic.jpg", price: "₹349", description: "Portable magnetic puzzle for travel.", rating: "4.3", stock: "Only 2 left" },
+    { id: 15, name: "Gradient Puzzle", image: "gradient.jpg", price: "₹499", description: "Color gradient-themed 1000-piece puzzle.", rating: "4.7", stock: "In Stock" }
+],
+"outdoor-toys": [
+    { id: 1, name: "Frisbee", image: "frisbee.jpg", price: "₹199", description: "Durable flying disc for outdoor fun.", rating: "4.5", stock: "In Stock" },
+    { id: 2, name: "Inflatable Pool", image: "pool.jpg", price: "₹1499", description: "Large inflatable pool for kids.", rating: "4.6", stock: "Only 3 left" },
+    { id: 3, name: "Kite", image: "kite.jpg", price: "₹299", description: "Colorful kite for windy days.", rating: "4.4", stock: "In Stock" },
+    { id: 4, name: "Soccer Ball", image: "soccer.jpg", price: "₹499", description: "Durable soccer ball for outdoor play.", rating: "4.7", stock: "In Stock" },
+    { id: 5, name: "Water Slide", image: "slide.jpg", price: "₹1999", description: "Inflatable water slide for summer fun.", rating: "4.8", stock: "Only 2 left" },
+    { id: 6, name: "Bubble Lawn Mower", image: "mower.jpg", price: "₹399", description: "Bubble-blowing toy lawn mower.", rating: "4.5", stock: "In Stock" },
+    { id: 7, name: "Nerf Gun", image: "nerf.jpg", price: "₹599", description: "Foam dart blaster for outdoor battles.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Jump Rope", image: "rope.jpg", price: "₹149", description: "Adjustable jump rope for kids.", rating: "4.3", stock: "Only 4 left" },
+    { id: 9, name: "Sand Play Set", image: "sand.jpg", price: "₹499", description: "Bucket, shovel, and molds for sand play.", rating: "4.5", stock: "In Stock" },
+    { id: 10, name: "Hula Hoop", image: "hoop.jpg", price: "₹299", description: "Colorful hula hoop for kids.", rating: "4.4", stock: "In Stock" },
+    { id: 11, name: "Trampoline", image: "trampoline.jpg", price: "₹4999", description: "Mini trampoline for kids.", rating: "4.7", stock: "Only 1 left" },
+    { id: 12, name: "Water Balloons", image: "balloons.jpg", price: "₹99", description: "Pack of 100 water balloons.", rating: "4.3", stock: "In Stock" },
+    { id: 13, name: "Play Tent", image: "tent.jpg", price: "₹899", description: "Pop-up play tent for kids.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "RC Helicopter", image: "helicopter.jpg", price: "₹1299", description: "Remote-controlled helicopter.", rating: "4.5", stock: "Only 2 left" },
+    { id: 15, name: "Outdoor Bowling Set", image: "bowling-outdoor.jpg", price: "₹699", description: "10-pin bowling set for outdoor play.", rating: "4.4", stock: "In Stock" }
+],
+"fiction": [
+    { id: 1, name: "The Alchemist", image: "alchemist.jpg", price: "₹299", description: "A novel by Paulo Coelho about following your dreams.", rating: "4.7", stock: "In Stock" },
+    { id: 2, name: "Harry Potter and the Sorcerer's Stone", image: "harry-potter.jpg", price: "₹499", description: "The first book in the Harry Potter series by J.K. Rowling.", rating: "4.9", stock: "Only 3 left" },
+    { id: 3, name: "1984", image: "1984.jpg", price: "₹349", description: "A dystopian novel by George Orwell.", rating: "4.8", stock: "In Stock" },
+    { id: 4, name: "The Great Gatsby", image: "gatsby.jpg", price: "₹279", description: "A classic novel by F. Scott Fitzgerald.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "To Kill a Mockingbird", image: "mockingbird.jpg", price: "₹399", description: "A Pulitzer Prize-winning novel by Harper Lee.", rating: "4.7", stock: "Only 2 left" },
+    { id: 6, name: "Pride and Prejudice", image: "pride.jpg", price: "₹249", description: "A romantic novel by Jane Austen.", rating: "4.5", stock: "In Stock" },
+    { id: 7, name: "The Hobbit", image: "hobbit.jpg", price: "₹449", description: "A fantasy novel by J.R.R. Tolkien.", rating: "4.8", stock: "In Stock" },
+    { id: 8, name: "The Catcher in the Rye", image: "catcher.jpg", price: "₹299", description: "A classic novel by J.D. Salinger.", rating: "4.6", stock: "Only 1 left" },
+    { id: 9, name: "The Lord of the Rings", image: "lotr.jpg", price: "₹999", description: "A fantasy trilogy by J.R.R. Tolkien.", rating: "4.9", stock: "In Stock" },
+    { id: 10, name: "The Da Vinci Code", image: "davinci.jpg", price: "₹399", description: "A thriller novel by Dan Brown.", rating: "4.5", stock: "In Stock" },
+    { id: 11, name: "The Kite Runner", image: "kite.jpg", price: "₹349", description: "A novel by Khaled Hosseini.", rating: "4.7", stock: "Only 4 left" },
+    { id: 12, name: "The Chronicles of Narnia", image: "narnia.jpg", price: "₹599", description: "A fantasy series by C.S. Lewis.", rating: "4.8", stock: "In Stock" },
+    { id: 13, name: "The Girl on the Train", image: "girl-train.jpg", price: "₹299", description: "A psychological thriller by Paula Hawkins.", rating: "4.4", stock: "In Stock" },
+    { id: 14, name: "The Hunger Games", image: "hunger-games.jpg", price: "₹399", description: "A dystopian novel by Suzanne Collins.", rating: "4.7", stock: "Only 2 left" },
+    { id: 15, name: "The Shining", image: "shining.jpg", price: "₹449", description: "A horror novel by Stephen King.", rating: "4.6", stock: "In Stock" }
+],
+"non-fiction": [
+    { id: 1, name: "Sapiens: A Brief History of Humankind", image: "sapiens.jpg", price: "₹499", description: "A book by Yuval Noah Harari about human history.", rating: "4.8", stock: "In Stock" },
+    { id: 2, name: "Atomic Habits", image: "atomic.jpg", price: "₹399", description: "A self-help book by James Clear.", rating: "4.9", stock: "Only 3 left" },
+    { id: 3, name: "Becoming", image: "becoming.jpg", price: "₹599", description: "Michelle Obama's memoir.", rating: "4.7", stock: "In Stock" },
+    { id: 4, name: "The Subtle Art of Not Giving a F*ck", image: "subtle.jpg", price: "₹299", description: "A self-help book by Mark Manson.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Educated", image: "educated.jpg", price: "₹499", description: "A memoir by Tara Westover.", rating: "4.8", stock: "Only 2 left" },
+    { id: 6, name: "Thinking, Fast and Slow", image: "thinking.jpg", price: "₹599", description: "A book by Daniel Kahneman about decision-making.", rating: "4.7", stock: "In Stock" },
+    { id: 7, name: "The Power of Now", image: "now.jpg", price: "₹349", description: "A spiritual guidebook by Eckhart Tolle.", rating: "4.5", stock: "In Stock" },
+    { id: 8, name: "Quiet: The Power of Introverts", image: "quiet.jpg", price: "₹399", description: "A book by Susan Cain about introversion.", rating: "4.6", stock: "Only 1 left" },
+    { id: 9, name: "The 7 Habits of Highly Effective People", image: "habits.jpg", price: "₹449", description: "A self-help book by Stephen R. Covey.", rating: "4.7", stock: "In Stock" },
+    { id: 10, name: "Outliers: The Story of Success", image: "outliers.jpg", price: "₹299", description: "A book by Malcolm Gladwell.", rating: "4.6", stock: "In Stock" },
+    { id: 11, name: "The Diary of a Young Girl", image: "diary.jpg", price: "₹199", description: "Anne Frank's diary during WWII.", rating: "4.8", stock: "Only 4 left" },
+    { id: 12, name: "The Art of War", image: "war.jpg", price: "₹149", description: "A classic book on strategy by Sun Tzu.", rating: "4.5", stock: "In Stock" },
+    { id: 13, name: "Freakonomics", image: "freakonomics.jpg", price: "₹399", description: "A book exploring economics in everyday life.", rating: "4.6", stock: "In Stock" },
+    { id: 14, name: "The Four Agreements", image: "agreements.jpg", price: "₹249", description: "A self-help book by Don Miguel Ruiz.", rating: "4.7", stock: "Only 2 left" },
+    { id: 15, name: "Born a Crime", image: "crime.jpg", price: "₹499", description: "Trevor Noah's memoir about growing up in South Africa.", rating: "4.8", stock: "In Stock" }
+],
+"stationery": [
+    { id: 1, name: "Premium Notebook", image: "notebook.jpg", price: "₹199", description: "A5-sized ruled notebook.", rating: "4.5", stock: "In Stock" },
+    { id: 2, name: "Gel Pens (Pack of 10)", image: "gel-pens.jpg", price: "₹149", description: "Smooth-writing gel pens in assorted colors.", rating: "4.6", stock: "Only 3 left" },
+    { id: 3, name: "Sticky Notes", image: "sticky.jpg", price: "₹99", description: "Pack of 100 sticky notes in assorted colors.", rating: "4.4", stock: "In Stock" },
+    { id: 4, name: "Mechanical Pencil", image: "pencil.jpg", price: "₹49", description: "0.5mm mechanical pencil with refill.", rating: "4.3", stock: "In Stock" },
+    { id: 5, name: "Whiteboard Marker Set", image: "marker.jpg", price: "₹199", description: "Set of 4 whiteboard markers.", rating: "4.5", stock: "Only 2 left" },
+    { id: 6, name: "Plastic File Folder", image: "folder.jpg", price: "₹79", description: "A4-sized plastic file folder.", rating: "4.2", stock: "In Stock" },
+    { id: 7, name: "Desk Organizer", image: "organizer.jpg", price: "₹499", description: "Wooden desk organizer for stationery.", rating: "4.6", stock: "In Stock" },
+    { id: 8, name: "Highlighters (Pack of 6)", image: "highlighters.jpg", price: "₹129", description: "Assorted color highlighters.", rating: "4.5", stock: "Only 1 left" },
+    { id: 9, name: "A4 Sheet Pack", image: "a4.jpg", price: "₹199", description: "Pack of 500 A4 sheets.", rating: "4.4", stock: "In Stock" },
+    { id: 10, name: "Correction Tape", image: "tape.jpg", price: "₹59", description: "Smooth correction tape for errors.", rating: "4.3", stock: "In Stock" },
+    { id: 11, name: "Stapler with Staples", image: "stapler.jpg", price: "₹149", description: "Heavy-duty stapler with 1000 staples.", rating: "4.5", stock: "Only 4 left" },
+    { id: 12, name: "Scissors", image: "scissors.jpg", price: "₹99", description: "Sharp stainless steel scissors.", rating: "4.4", stock: "In Stock" },
+    { id: 13, name: "Eraser Pack", image: "eraser.jpg", price: "₹49", description: "Pack of 5 high-quality erasers.", rating: "4.3", stock: "In Stock" },
+    { id: 14, name: "Ruler Set", image: "ruler.jpg", price: "₹79", description: "Set of 3 rulers (15cm, 30cm, 45cm).", rating: "4.2", stock: "Only 2 left" },
+    { id: 15, name: "Pencil Case", image: "pencil-case.jpg", price: "₹199", description: "Durable fabric pencil case.", rating: "4.5", stock: "In Stock" }
+],
+"art-supplies": [
+    { id: 1, name: "Acrylic Paint Set", image: "acrylic.jpg", price: "₹499", description: "Set of 12 acrylic paints with brushes.", rating: "4.6", stock: "In Stock" },
+    { id: 2, name: "Sketchbook", image: "sketchbook.jpg", price: "₹299", description: "A4-sized sketchbook for artists.", rating: "4.5", stock: "Only 3 left" },
+    { id: 3, name: "Watercolor Paint Set", image: "watercolor.jpg", price: "₹399", description: "Set of 24 watercolor paints.", rating: "4.7", stock: "In Stock" },
+    { id: 4, name: "Drawing Pencils (Set of 12)", image: "pencils.jpg", price: "₹199", description: "Graphite pencils in various grades.", rating: "4.6", stock: "In Stock" },
+    { id: 5, name: "Oil Paint Set", image: "oil.jpg", price: "₹799", description: "Set of 6 oil paints with palette.", rating: "4.8", stock: "Only 2 left" },
+    { id: 6, name: "Easel Stand", image: "easel.jpg", price: "₹1499", description: "Adjustable wooden easel stand.", rating: "4.7", stock: "In Stock" },
+    { id: 7, name: "Brush Set", image: "brush.jpg", price: "₹299", description: "Set of 10 paintbrushes for various techniques.", rating: "4.5", stock: "In Stock" },
+    { id: 8, name: "Canvas Boards (Pack of 5)", image: "canvas.jpg", price: "₹499", description: "Primed canvas boards for painting.", rating: "4.6", stock: "Only 1 left" },
+    { id: 9, name: "Charcoal Pencils", image: "charcoal.jpg", price: "₹149", description: "Set of 6 charcoal pencils.", rating: "4.4", stock: "In Stock" },
+    { id: 10, name: "Pastel Set", image: "pastel.jpg", price: "₹599", description: "Set of 24 soft pastels.", rating: "4.7", stock: "In Stock" },
+    { id: 11, name: "Palette Knife Set", image: "knife.jpg", price: "₹199", description: "Set of 5 palette knives for painting.", rating: "4.5", stock: "Only 4 left" },
+    { id: 12, name: "Art Marker Set", image: "marker-art.jpg", price: "₹399", description: "Set of 12 dual-tip art markers.", rating: "4.6", stock: "In Stock" },
+    { id: 13, name: "Calligraphy Pen Set", image: "calligraphy.jpg", price: "₹299", description: "Set of 3 calligraphy pens with ink.", rating: "4.5", stock: "In Stock" },
+    { id: 14, name: "Spray Paint Set", image: "spray.jpg", price: "₹499", description: "Set of 6 spray paints for graffiti art.", rating: "4.4", stock: "Only 2 left" },
+    { id: 15, name: "Art Supply Case", image: "art-case.jpg", price: "₹699", description: "Portable case for art supplies.", rating: "4.6", stock: "In Stock" }
+]       
+};
+
+document.addEventListener("DOMContentLoaded", function () { 
+    function getSubcategory() { 
+        const urlParams = new URLSearchParams(window.location.search); 
+        return urlParams.get('subcategory') ? urlParams.get('subcategory').toLowerCase() : null; 
+    } 
+ 
+    function loadProducts() { 
+        const subcategory = getSubcategory(); 
+        if (!subcategory) { 
+            console.error("Subcategory not found in URL."); 
+            return; 
+        } 
+ 
+        document.getElementById("subcategory-title").textContent = subcategory.replace("-", " ").toUpperCase(); 
+        const productsContainer = document.getElementById("products-container"); 
+        productsContainer.innerHTML = ""; 
+ 
+        if (productData.hasOwnProperty(subcategory)) { 
+            productData[subcategory].forEach(product => { 
+                if (!product.id || !product.name || !product.price || !product.image) { 
+                    console.warn("Invalid product data:", product); 
+                    return; 
+                } 
+ 
+                const productCard = document.createElement("div"); 
+                productCard.classList.add("category-box"); 
+                productCard.innerHTML = ` 
+                    <div class="category-image"> 
+                        <img src="${product.image}" alt="${product.name}" data-id="${product.id}"> 
+                    </div> 
+                    <div class="category-details"> 
+                        <h3 class="category-name">${product.name}</h3> 
+                        <p class="item-price">${product.price}</p> 
+                        <button class="add-to-cart-btn" data-id="${product.id}"  
+                            data-name="${product.name}"  
+                            data-price="${product.price}"  
+                            data-image="${product.image}"> 
+                            Add to Cart 
+                        </button> 
+                    </div> 
+                `; 
+                productsContainer.appendChild(productCard); 
+            }); 
+ 
+            // Attach event listeners to buttons 
+            document.querySelectorAll(".add-to-cart-btn").forEach(button => { 
+                button.addEventListener("click", function (event) { 
+                    event.stopPropagation(); 
+                    addToCart( 
+                        parseInt(this.dataset.id), 
+                        this.dataset.name, 
+                        this.dataset.price, 
+                        this.dataset.image 
+                    ); 
+                }); 
+            }); 
+            
+            // Add event listeners to product images
+            document.querySelectorAll(".category-image img").forEach(img => {
+                img.style.cursor = "pointer"; // Add pointer cursor to indicate clickable
+                img.addEventListener("click", function() {
+                    const productId = this.dataset.id;
+                    window.location.href = `product-details.html?product_id=${productId}`;
+                });
+            });
+        } else { 
+            console.warn(`No products found for subcategory: ${subcategory}`); 
+        } 
+    } 
+ 
+    function addToCart(id, name, price, image) { 
+        if (!id) { 
+            console.error("Invalid product ID:", id); 
+            return; 
+        } 
+ 
+        let cart = JSON.parse(localStorage.getItem("cart")) || []; 
+        let existingItem = cart.find(item => item.id === id); 
+ 
+        if (existingItem) { 
+            existingItem.quantity += 1; 
+        } else { 
+            cart.push({ id, name, price, image, quantity: 1 }); 
+        } 
+ 
+        localStorage.setItem("cart", JSON.stringify(cart)); 
+        alert(`${name} added to cart!`); 
+        console.log("Cart:", cart); // Debugging 
+    } 
+ 
+    loadProducts(); 
+});
+    </script>
+
+</body>
+</html>

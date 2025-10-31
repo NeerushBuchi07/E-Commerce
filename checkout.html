@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Shipping Address</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+    
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            background-image: linear-gradient(to bottom right, #f9f9f9, #e3f2f9);
+        }
+    
+        .checkout-container {
+            max-width: 900px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(43, 103, 119, 0.15);
+            transition: all 0.3s ease;
+        }
+    
+        .checkout-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(43, 103, 119, 0.2);
+        }
+    
+        .checkout-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eef8f9;
+        }
+    
+        .checkout-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+    
+        .checkout-steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background-color: #e0e0e0;
+            z-index: 1;
+        }
+    
+        .step {
+            text-align: center;
+            margin: 0 15px;
+            position: relative;
+            z-index: 2;
+        }
+    
+        .step.completed .step-number {
+            background-color: #52ab98;
+            color: white;
+        }
+    
+        .step.active .step-number {
+            background-color: #2b6777;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(43, 103, 119, 0.3);
+        }
+    
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+    
+        .step.active .step-label {
+            color: #2b6777;
+            font-weight: bold;
+        }
+    
+        .step.completed .step-label {
+            color: #52ab98;
+        }
+    
+        .step-label {
+            color: #777;
+            transition: all 0.3s ease;
+        }
+    
+        h1 {
+            font-size: 28px;
+            color: #2b6777;
+            margin-bottom: 5px;
+        }
+    
+        h2 {
+            font-size: 22px;
+            color: #2b6777;
+            margin-bottom: 25px;
+            position: relative;
+        }
+    
+        h2::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background-color: #52ab98;
+            margin-top: 8px;
+        }
+    
+        .addresses-container {
+            margin-bottom: 30px;
+        }
+    
+        .no-addresses {
+            text-align: center;
+            padding: 40px 0;
+            color: #777;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    
+        .no-addresses i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+    
+        .address-item {
+            border: 1px solid #e3f2f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            background-color: #fafcfd;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+    
+        .address-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+    
+        .address-item.selected {
+            border: 2px solid #52ab98;
+            background-color: #f0f9f7;
+        }
+    
+        .address-checkbox {
+            margin-right: 15px;
+            margin-top: 5px;
+            transform: scale(1.2);
+        }
+    
+        .address-details {
+            flex-grow: 1;
+        }
+    
+        .address-details p {
+            margin-bottom: 5px;
+            line-height: 1.5;
+            color: #555;
+        }
+    
+        .address-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #2b6777;
+        }
+    
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+    
+        .add-address-btn {
+            padding: 14px 28px;
+            background-color: white;
+            color: #2b6777;
+            border: 2px solid #2b6777;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+    
+        .add-address-btn:hover {
+            background-color: #f0f9f7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        .next-btn {
+            padding: 14px 28px;
+            background-color: #2b6777;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(43, 103, 119, 0.2);
+        }
+    
+        .next-btn:hover {
+            background-color: #1e4a5e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(43, 103, 119, 0.3);
+        }
+    
+        .next-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    
+        /* Address Form Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .modal-content {
+            background-color: white;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            position: relative;
+            animation: modalopen 0.3s;
+        }
+    
+        @keyframes modalopen {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+    
+        .form-group {
+            margin-bottom: 15px;
+        }
+    
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2b6777;
+        }
+    
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+    
+        .form-group input:focus {
+            border-color: #52ab98;
+            outline: none;
+        }
+    
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+    
+        .form-row .form-group {
+            flex: 1;
+        }
+    
+        .save-address-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #52ab98;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(82, 171, 152, 0.3);
+        }
+    
+        .save-address-btn:hover {
+            background-color: #458b7d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(82, 171, 152, 0.4);
+        }
+    
+        /* Order Summary */
+        .order-summary {
+            background-color: #f9fdfd;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #2b6777;
+        }
+    
+        .order-summary h3 {
+            margin-bottom: 20px;
+            color: #2b6777;
+        }
+    
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            color: #555;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e3f2f9;
+        }
+    
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #e3f2f9;
+            font-weight: bold;
+            font-size: 18px;
+            color: #2b6777;
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .checkout-container {
+                margin: 20px auto;
+                padding: 20px;
+            }
+    
+            .checkout-steps::before {
+                left: 10%;
+                right: 10%;
+            }
+    
+            .step {
+                margin: 0 10px;
+            }
+    
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+    
+            .add-address-btn, .next-btn {
+                width: 100%;
+            }
+    
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h1>Checkout</h1>
+        </div>
+
+        <div class="checkout-steps">
+            <div class="step active">
+                <div class="step-number">1</div>
+                <div class="step-label">Address</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-label">Shipping</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-label">Payment</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-label">Review</div>
+            </div>
+        </div>
+
+        <h2>Addresses</h2>
+        <div class="addresses-container" id="addresses-container">
+            <!-- This will be populated with addresses or "No addresses available" message -->
+        </div>
+
+        <div class="action-buttons">
+            <button class="add-address-btn" id="add-address-btn">+ Add Address</button>
+            <button class="next-btn" id="next-btn" type="submit">Proceed to Shipping</button>
+        </div>
+
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            <div id="order-items">
+                <!-- Cart items will be dynamically populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Address Modal Form -->
+    <div class="modal" id="address-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2>Add New Address</h2>
+            <form id="address-form">
+                <div class="form-group">
+                    <label for="full-name">Full Name</label>
+                    <input type="text" id="full-name" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="street-address">Street Address</label>
+                    <input type="text" id="street-address" placeholder="123 street" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" placeholder="Tenali" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" placeholder="AP" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pin-code">Pin Code</label>
+                        <input type="text" id="zip-code" placeholder="10001" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" placeholder="India" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" placeholder="+91 12345 67890" required>
+                </div>
+                <button type="submit" class="save-address-btn">Save Address</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const addressesContainer = document.getElementById("addresses-container");
+        const addAddressBtn = document.getElementById("add-address-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const addressModal = document.getElementById("address-modal");
+        const closeModal = document.getElementById("close-modal");
+        const addressForm = document.getElementById("address-form");
+
+        // Function to load cart items and display them in the order summary
+        function loadCartItems() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const orderSummary = document.querySelector(".order-summary");
+            const orderItemsContainer = document.createElement("div");
+            orderItemsContainer.id = "order-items";
+
+            // Clear existing order items
+            orderSummary.querySelector("#order-items")?.remove();
+
+            if (cart.length === 0) {
+                // Display a message if the cart is empty
+                const emptyCartMsg = document.createElement("p");
+                emptyCartMsg.textContent = "Your cart is empty.";
+                orderItemsContainer.appendChild(emptyCartMsg);
+            } else {
+                // Display each item in the cart
+                let totalCost = 0;
+                cart.forEach((item, index) => {
+                    const orderItem = document.createElement("div");
+                    orderItem.className = "order-item";
+                    orderItem.innerHTML = `
+                        <span>${item.name} (${item.quantity}x)</span>
+                        <span>$${(parseFloat(item.price.replace("$", "")) * item.quantity).toFixed(2)}</span>
+                    `;
+                    orderItemsContainer.appendChild(orderItem);
+
+                    // Calculate total cost
+                    totalCost += parseFloat(item.price.replace("$", "")) * item.quantity;
+                });
+
+                // Add shipping cost (if applicable)
+                const shippingCost = 5.00; // Example shipping cost
+                totalCost += shippingCost;
+
+                // Display shipping cost
+                const shippingItem = document.createElement("div");
+                shippingItem.className = "order-item";
+                shippingItem.innerHTML = `
+                    <span>Shipping</span>
+                    <span>$${shippingCost.toFixed(2)}</span>
+                `;
+                orderItemsContainer.appendChild(shippingItem);
+
+                // Display total cost
+                const totalItem = document.createElement("div");
+                totalItem.className = "order-total";
+                totalItem.innerHTML = `
+                    <span>Total</span>
+                    <span>$${totalCost.toFixed(2)}</span>
+                `;
+                orderItemsContainer.appendChild(totalItem);
+            }
+
+            // Append the order items to the order summary
+            orderSummary.appendChild(orderItemsContainer);
+        }
+
+        // Function to display saved addresses
+        function displaySavedAddresses() {
+            const savedAddresses = JSON.parse(localStorage.getItem("savedAddresses")) || [];
+            addressesContainer.innerHTML = ""; // Clear existing addresses
+
+            if (savedAddresses.length === 0) {
+                // Display "No addresses available" message
+                const noAddressesDiv = document.createElement("div");
+                noAddressesDiv.className = "no-addresses";
+                noAddressesDiv.innerHTML = `
+                    <i>🏠</i>
+                    <p>No addresses available. Please add an address.</p>
+                `;
+                addressesContainer.appendChild(noAddressesDiv);
+                nextBtn.disabled = true; // Disable "Proceed to Shipping" button
+            } else {
+                // Display each saved address
+                savedAddresses.forEach((address, index) => {
+                    const addressItem = document.createElement("div");
+                    addressItem.className = "address-item";
+                    addressItem.innerHTML = `
+                        <input type="radio" name="address" class="address-checkbox" data-index="${index}">
+                        <div class="address-details">
+                            <p class="address-name">${address.fullName}</p>
+                            <p>${address.streetAddress}</p>
+                            <p>${address.city}, ${address.state} ${address.zipCode}</p>
+                            <p>${address.country}</p>
+                            <p>Phone: ${address.phone}</p>
+                        </div>
+                    `;
+                    addressesContainer.appendChild(addressItem);
+
+                    // Add event listener to select address
+                    const addressCheckbox = addressItem.querySelector(".address-checkbox");
+                    addressCheckbox.addEventListener("change", function() {
+                        localStorage.setItem("selectedAddressIndex", index);
+                        nextBtn.disabled = false; // Enable "Proceed to Shipping" button
+                    });
+                });
+            }
+        }
+
+        // Function to save a new address
+        function saveAddress(event) {
+            event.preventDefault();
+
+            const fullName = document.getElementById("full-name").value;
+            const streetAddress = document.getElementById("street-address").value;
+            const city = document.getElementById("city").value;
+            const state = document.getElementById("state").value;
+            const zipCode = document.getElementById("zip-code").value;
+            const country = document.getElementById("country").value;
+            const phone = document.getElementById("phone").value;
+
+            const newAddress = {
+                fullName,
+                streetAddress,
+                city,
+                state,
+                zipCode,
+                country,
+                phone,
+            };
+
+            // Save the new address to localStorage
+            const savedAddresses = JSON.parse(localStorage.getItem("savedAddresses")) || [];
+            savedAddresses.push(newAddress);
+            localStorage.setItem("savedAddresses", JSON.stringify(savedAddresses));
+
+            // Close the modal and refresh the addresses list
+            addressModal.style.display = "none";
+            displaySavedAddresses();
+        }
+
+        // Event listeners
+        addAddressBtn.addEventListener("click", function() {
+            addressModal.style.display = "flex";
+        });
+
+        closeModal.addEventListener("click", function() {
+            addressModal.style.display = "none";
+        });
+
+        addressForm.addEventListener("submit", saveAddress);
+
+        // Proceed to shipping page when "Next" button is clicked
+        nextBtn.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent form submission (if the button is inside a form)
+
+            const selectedAddressIndex = localStorage.getItem("selectedAddressIndex");
+            if (selectedAddressIndex !== null) {
+                // Save the selected address for the current order
+                const addresses = JSON.parse(localStorage.getItem("savedAddresses"));
+                const selectedAddress = addresses[selectedAddressIndex];
+                localStorage.setItem("shippingAddress", JSON.stringify(selectedAddress));
+
+                // Redirect to the shipping page
+                window.location.href = "shipping.html";
+            } else {
+                alert("Please select an address to proceed.");
+            }
+        });
+
+        // Call the function to load cart items and addresses when the page loads
+        document.addEventListener("DOMContentLoaded", function() {
+            loadCartItems();
+            displaySavedAddresses();
+        });
+    </script>
+</body>
+</html>
