@@ -1,3 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickCart - The Smart Shopping Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            width: 100%;
+            height: 100vh;
+        }
+        
+        /* Top Frame */
+        .top-frame {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+        }
+        
+        .logo img {
+            height: 170%;
+        }
+        
+        .nav-items {
+            display: flex;
+            gap: 20px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .nav-items a {
+            text-decoration: none;
+            color: #333;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-items a:hover {
+            color: #52ab98;
+            transform: scale(1.3);
+            font-weight: bold;
+        }
+        
+        .account-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .sign-in {
+            text-decoration: none;
+            color: #333;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            padding: 8px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .sign-in:hover {
+            color: #52ab98;
+            transform: scale(1.1);
+            font-weight: bold;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+        
+        /* Left Frame */
+        .left-frame {
+            width: 50%;
+            padding: 80px 50px;
+            background-color: #2b6777;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .welcome-title {
+            font-size: 45px;
+            font-family: 'Georgia', serif;
+            margin-bottom: 20px;
+        }
+        
+        .tagline {
+            font-size: 21px;
+            font-family: 'Georgia';
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            background-color: white;
+            color: #2b6777;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: fit-content;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .cta-button:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* Right Frame */
+        .right-frame {
+            width: 50%;
+            background-color: #c8dbe4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .right-frame img {
+            max-width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Frame -->
+    <div class="top-frame">
+        <div class="logo">
+            <img src="logo-transparent-png.png" alt="QuickCart Logo">
+        </div>
+        <div class="nav-items">
+            <a href="login.html">Home</a>
+            <a href="login.html">Products</a>
+            <a href="login.html">Categories</a>
+            <a href="login.html">Deals</a>
+            <a href="login.html">About</a>
+        </div>
+        <div class="account-links">
+            <a href="login.html" class="sign-in">Sign In</a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Left Frame -->
+        <div class="left-frame">
+            <h1 class="welcome-title">Welcome to QuickCart</h1>
+            <p class="tagline">Shop smarter, not harder. Experience lightning-fast checkout and discover the best deals from thousands of trusted retailers, all in one place.</p>
+            <a href="login.html" class="cta-button">Start Shopping</a>
+        </div>
+        
+        <!-- Right Frame -->
+        <div class="right-frame">
+            <img src="shopping-illustration.jpg" alt="E-commerce shopping interface showing a mobile app with products">
+        </div>
+    </div>
+</body>
+</html>
 <!doctype html>
 <html lang="en">
   <head>
